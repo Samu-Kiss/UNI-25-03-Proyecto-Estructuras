@@ -14,6 +14,4 @@ int main()
     cout << termcolor::green << msg[1] << " ";
     cout << termcolor::blue << msg[2] << " ";
     cout << termcolor::reset << endl;
-
-    return 0;
 }
