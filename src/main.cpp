@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <src/include/termcolor.hpp>
+#include "./include/termcolor.hpp" // Librería para colores en la consola
 
 using namespace std;
 
