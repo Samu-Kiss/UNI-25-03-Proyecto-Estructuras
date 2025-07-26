@@ -1,15 +1,12 @@
 #include <iostream>
-#include <vector>
-#include <string>
 #include "../external/termcolor.hpp" // Librería para colores en la consola
-#include "../include/commands.h" // Incluir comandos personalizados
+#include "../include/commands.h"     // Incluir comandos personalizados
 
 using namespace std;
 
-int main()
-{
+int main() {
     string command;
-    
+
     cout << termcolor::green << "Consola Iniciada" << termcolor::reset << endl;
     cout << "Escribe 'exit', 'quit' o 'salir' para terminar." << endl;
     cout << "Si necesitas ayuda, escribe 'help' o 'ayuda'." << endl << endl;
@@ -17,10 +14,9 @@ int main()
     while (true) {
         // Mostrar el prompt $
         cout << termcolor::yellow << "$ " << termcolor::reset;
-        
+
         // Leer el comando del usuario
         getline(cin, command);
-
 
         // Comandos de salida
         if (command == "exit" || command == "quit" || command == "salir") {
