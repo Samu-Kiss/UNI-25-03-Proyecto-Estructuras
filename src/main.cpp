@@ -7,11 +7,19 @@ using namespace std;
 
 int main()
 {
-    vector<string> msg {"Hello", "C++", "World"};
+    string command;
+    
+    cout << termcolor::green << "Consola Iniciada" << termcolor::reset << endl;
 
-    // Usar diferentes colores para cada palabra
-    cout << termcolor::red << msg[0] << " ";
-    cout << termcolor::green << msg[1] << " ";
-    cout << termcolor::blue << msg[2] << " ";
-    cout << termcolor::reset << endl;
+    while (true) {
+        // Mostrar el prompt $
+        cout << termcolor::yellow << "$ " << termcolor::reset;
+        
+        // Leer el comando del usuario
+        getline(cin, command);
+
+        break;
+    }
+
+    return 0;
 }
