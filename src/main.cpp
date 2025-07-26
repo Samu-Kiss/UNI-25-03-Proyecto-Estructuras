@@ -10,6 +10,7 @@ int main()
     string command;
     
     cout << termcolor::green << "Consola Iniciada" << termcolor::reset << endl;
+    cout << "Escribe 'exit', 'quit' o 'salir' para terminar." << endl << endl;
 
     while (true) {
         // Mostrar el prompt $
@@ -18,7 +19,11 @@ int main()
         // Leer el comando del usuario
         getline(cin, command);
 
-        break;
+         // Comandos de salida
+        if (command == "exit" || command == "quit" || command == "salir") {
+            cout << termcolor::cyan << "Terminando Programa" << termcolor::reset << endl;
+            break;
+        }
     }
 
     return 0;
