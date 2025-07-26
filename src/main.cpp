@@ -19,10 +19,17 @@ int main()
         // Leer el comando del usuario
         getline(cin, command);
 
-         // Comandos de salida
+
+        // Comandos de salida
         if (command == "exit" || command == "quit" || command == "salir") {
             cout << termcolor::cyan << "Terminando Programa" << termcolor::reset << endl;
             break;
+        }
+        // Comando de ayuda
+        else if (command == "help" || command == "ayuda") {
+            cout << termcolor::blue << "Comandos disponibles:" << termcolor::reset << endl;
+            cout << "  help, ayuda  - Mostrar esta ayuda" << endl;
+            cout << "  exit, quit, salir - Salir de la consola" << endl;
         }
     }
 
