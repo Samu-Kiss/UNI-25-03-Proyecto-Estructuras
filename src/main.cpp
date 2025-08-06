@@ -6,6 +6,8 @@
 using namespace std;
 
 int main() {
+    setlocale(LC_ALL, "Spanish"); // Configurar la localización para caracteres especiales
+
     string command;
 
     cout << termcolor::green << "Consola Iniciada" << termcolor::reset << endl;
@@ -23,11 +25,17 @@ int main() {
         if (command == "exit" || command == "quit" || command == "salir") {
             comandoSalida();
         }
-        // Comando de ayuda
-        else if (command == "help" || command == "ayuda") {
-            comandoAyuda();
+        // Comando de ayuda (con o sin parámetro)
+        else if (command.rfind("help", 0) == 0 || command.rfind("ayuda", 0) == 0) {
+            // Extraer parámetro si existe
+            size_t espacio = command.find(' ');
+            string param = "";
+            if (espacio != string::npos) {
+                param = command.substr(espacio + 1);
+            }
+            comandoAyuda(param);
         }
-         //validar comando cargar
+        //validar comando cargar
         else if (valCargar(command)) {
             cout << termcolor::green << "comando válido: cargar" << termcolor::reset << endl;
         }

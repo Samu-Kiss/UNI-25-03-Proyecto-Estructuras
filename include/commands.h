@@ -6,7 +6,7 @@
 
 // Declaraciones de funciones de comandos
 void comandoSalida();
-void comandoAyuda();
+void comandoAyuda(const std::string& param = "");
 bool valCargar(std::string command);
 bool valListar(std::string command);
 bool valHistograma(std::string command);
