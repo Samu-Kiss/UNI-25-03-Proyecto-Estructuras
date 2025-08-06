@@ -33,7 +33,7 @@ int main() {
         }
         //validar comando listar
         else if (valListar(command) != false) {
-            cout << termcolor::green << "omando válido: listar_secuencias" << termcolor::reset << endl;
+            cout << termcolor::green << "comando válido: listar_secuencias" << termcolor::reset << endl;
         }
         //validar comando histograma
         else if (valHistograma(command) != false) {
