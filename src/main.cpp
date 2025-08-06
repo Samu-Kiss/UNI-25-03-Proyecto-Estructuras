@@ -28,43 +28,43 @@ int main() {
             comandoAyuda();
         }
          //validar comando cargar
-        else if (valCargar(command) != false) {
+        else if (valCargar(command)) {
             cout << termcolor::green << "comando válido: cargar" << termcolor::reset << endl;
         }
         //validar comando listar
-        else if (valListar(command) != false) {
+        else if (valListar(command)) {
             cout << termcolor::green << "comando válido: listar_secuencias" << termcolor::reset << endl;
         }
         //validar comando histograma
-        else if (valHistograma(command) != false) {
+        else if (valHistograma(command)) {
             cout << termcolor::green << "comando válido: histograma" << termcolor::reset << endl;
         }
         //validar comando subsecuencia
-        else if (valEsSubsecuencia(command) != false) {
+        else if (valEsSubsecuencia(command)) {
             cout << termcolor::green << "comando válido: es_subsecuencia" << termcolor::reset << endl;
         }
         //validar comando enmascarar
-        else if (valEnmascarar(command) != false) {
+        else if (valEnmascarar(command)) {
             cout << termcolor::green << "comando válido: enmascarar" << termcolor::reset << endl;
         }
         //validar comando guardar
-        else if (valGuardar(command) != false) {
+        else if (valGuardar(command)) {
             cout << termcolor::green << "comando válido: guardar" << termcolor::reset << endl;
         }
         //validar comando codificar
-        else if (valCodificar(command) != false) {
+        else if (valCodificar(command)) {
             cout << termcolor::green << "comando válido: codificar" << termcolor::reset << endl;
         }
         //validar comando decodificar
-        else if (valDecodificar(command) != false) {
+        else if (valDecodificar(command)) {
             cout << termcolor::green << "comando válido: decodificar" << termcolor::reset << endl;
         }
         //validar comando ruta_mas_corta
-        else if (valRutaMasCorta(command) != false) {
+        else if (valRutaMasCorta(command)) {
             cout << termcolor::green << "comando válido: ruta_mas_corta" << termcolor::reset << endl;
         }
         //validar comando base_remota
-        else if (valBaseRemota(command) != false) {
+        else if (valBaseRemota(command)) {
             cout << termcolor::green << "comando válido: base_remota" << termcolor::reset << endl;
         }
         //validar otros
