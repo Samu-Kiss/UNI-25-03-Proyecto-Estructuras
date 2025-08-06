@@ -28,7 +28,7 @@ bool valCargar(string command) {
         return false;
     }
 
-    if (param.empty() || param.find(' ') != -1) {
+    if (isInvalidParam(param)) {
         return false;
     }
 
