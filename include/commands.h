@@ -4,20 +4,18 @@
 #include <iostream>
 #include <string>
 
-using namespace std;
-
 // Declaraciones de funciones de comandos
 void comandoSalida();
 void comandoAyuda();
-bool valCargar(string command);
-bool valListar(string command);
-bool valHistograma(string command);
-bool valEsSubsecuencia(string command);
-bool valEnmascarar(string command);
-bool valGuardar(string command);
-bool valCodificar(string command);
-bool valDecodificar(string command);
-bool valRutaMasCorta(string command);
-bool valBaseRemota(string command);
+bool valCargar(std::string command);
+bool valListar(std::string command);
+bool valHistograma(std::string command);
+bool valEsSubsecuencia(std::string command);
+bool valEnmascarar(std::string command);
+bool valGuardar(std::string command);
+bool valCodificar(std::string command);
+bool valDecodificar(std::string command);
+bool valRutaMasCorta(std::string command);
+bool valBaseRemota(std::string command);
 
 #endif // COMMANDS_H
