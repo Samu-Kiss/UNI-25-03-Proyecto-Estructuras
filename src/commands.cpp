@@ -11,8 +11,14 @@ void comandoSalida() {
 
 void comandoAyuda() {
     cout << termcolor::blue << "Comandos disponibles:" << termcolor::reset << endl;
-    cout << "  help, ayuda  - Mostrar esta ayuda" << endl;
-    cout << "  exit, quit, salir - Salir de la consola" << endl;
+    cout << "  help, ayuda               - Mostrar esta ayuda" << endl;
+    cout << "  exit, quit, salir         - Salir de la consola" << endl;
+    cout << "  cargar <nombre_archivo>   - Cargar secuencias desde un archivo" << endl;
+    cout << "  listar_secuencias         - Listar todas las secuencias en memoria" << endl;
+    cout << "  histograma <descripcion>  - Mostrar histograma de una secuencia" << endl;
+    cout << "  es_subsecuencia <subsec>  - Verificar si existe una subsecuencia" << endl;
+    cout << "  enmascarar <subsecuencia> - Enmascarar una subsecuencia" << endl;
+    cout << "  guardar <nombre_archivo>  - Guardar secuencias en un archivo" << endl;
 }
 
 bool valCargar(string command) {
