@@ -59,7 +59,7 @@ int main() {
         else if (valDecodificar(command) != false) {
             cout << termcolor::green << "comando válido: decodificar" << termcolor::reset << endl;
         }
-        ////validar comando ruta_mas_corta
+        //validar comando ruta_mas_corta
         else if (valRutaMasCorta(command) != false) {
             cout << termcolor::green << "comando válido: ruta_mas_corta" << termcolor::reset << endl;
         }
