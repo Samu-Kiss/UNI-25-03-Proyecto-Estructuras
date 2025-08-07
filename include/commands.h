@@ -17,5 +17,6 @@ bool valCodificar(std::string command);
 bool valDecodificar(std::string command);
 bool valRutaMasCorta(std::string command);
 bool valBaseRemota(std::string command);
+void clearScreen();
 
 #endif // COMMANDS_H

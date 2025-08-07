@@ -75,12 +75,16 @@ int main() {
         else if (valBaseRemota(command)) {
             cout << termcolor::green << "comando válido: base_remota" << termcolor::reset << endl;
         }
+        //validar comando clear
+        else if (command == "clear") {
+            clearScreen();
+        }
         //validar otros
         else {
             cout << termcolor::red << "Error: comando no reconocido o parámetros incorrectos." << termcolor::reset << endl;
         }
 
-        cout << termcolor::cyan << "> Comando finalizado." << termcolor::reset << endl;
+        cout << termcolor::cyan << "> Comando finalizado." << termcolor::reset << endl << endl;
     }
 
     return 0;
