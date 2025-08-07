@@ -9,6 +9,7 @@ int main() {
     // Soporte para acentos y caracteres especiales en Windows
 #ifdef _WIN32
     // Cambiar la codificación de entrada y salida estándar a UTF-8
+    // Fuente: https://stackoverflow.com/questions/10882277/properly-print-utf8-characters-in-windows-console
     SetConsoleOutputCP(CP_UTF8);
     SetConsoleCP(CP_UTF8);
 #endif
