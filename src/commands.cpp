@@ -253,7 +253,13 @@ bool esEnteroPositivo(const string &s) {
     for (char c: s) {
         if (!isdigit(c)) return false;
     }
-    return stoi(s) > 0;
+    try {
+        return std::stoi(s) > 0;
+    } catch (const std::invalid_argument&) {
+        return false;
+    } catch (const std::out_of_range&) {
+        return false;
+    }
 }
 
 // Valida los cuatro parámetros y que sean enteros positivos
@@ -306,6 +312,7 @@ bool valBaseRemota(string command) {
 }
 
 // Limpia la pantalla de la consola, compatible con Windows y Unix
+// Fuente: https://stackoverflow.com/questions/228617/how-do-i-clear-the-console-in-both-windows-and-linux-using-c
 void clearScreen() {
 #ifdef _WIN32
     system("cls");

@@ -9,7 +9,6 @@ int main() {
     // Soporte para acentos y caracteres especiales en Windows
 #ifdef _WIN32
     // Cambiar la codificación de entrada y salida estándar a UTF-8
-    system("chcp 65001 > nul");
     SetConsoleOutputCP(CP_UTF8);
     SetConsoleCP(CP_UTF8);
 #endif
