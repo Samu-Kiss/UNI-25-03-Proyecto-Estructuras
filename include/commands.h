@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include "utils.h"
 
 // Declaraciones de funciones de comandos
 void comandoSalida();
@@ -19,7 +20,5 @@ bool valRutaMasCorta(std::string command);
 bool valBaseRemota(std::string command);
 bool parseRutaMasCorta(const std::string& command, int& i, int& j, int& x, int& y);
 bool parseBaseRemota(const std::string& command, int& i, int& j);
-
-void clearScreen();
 
 #endif // COMMANDS_H
