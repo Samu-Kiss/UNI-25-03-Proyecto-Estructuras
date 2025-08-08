@@ -6,7 +6,7 @@
 
 // Declaraciones de funciones de comandos
 void comandoSalida();
-void comandoAyuda();
+void comandoAyuda(const std::string& param = "");
 bool valCargar(std::string command);
 bool valListar(std::string command);
 bool valHistograma(std::string command);
@@ -17,5 +17,9 @@ bool valCodificar(std::string command);
 bool valDecodificar(std::string command);
 bool valRutaMasCorta(std::string command);
 bool valBaseRemota(std::string command);
+bool parseRutaMasCorta(const std::string& command, int& i, int& j, int& x, int& y);
+bool parseBaseRemota(const std::string& command, int& i, int& j);
+
+void clearScreen();
 
 #endif // COMMANDS_H
