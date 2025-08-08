@@ -4,10 +4,8 @@
 
 using namespace std;
 
-bool valListar(string command)
-{
-    if (command == "listar_secuencias")
-    {
+bool valListar(string command) {
+    if (command == "listar_secuencias") {
         return true;
     }
 

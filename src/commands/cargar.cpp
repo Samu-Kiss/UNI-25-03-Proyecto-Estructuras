@@ -4,24 +4,20 @@
 
 using namespace std;
 
-bool valCargar(string command)
-{
+bool valCargar(string command) {
     int espacio = command.find(' ');
-    if (espacio == -1)
-    {
+    if (espacio == -1) {
         return false;
     }
 
     string cmd = command.substr(0, espacio);
     string param = command.substr(espacio + 1);
 
-    if (cmd != "cargar")
-    {
+    if (cmd != "cargar") {
         return false;
     }
 
-    if (param.empty() || param.find(' ') != -1)
-    {
+    if (param.empty() || param.find(' ') != -1) {
         return false;
     }
 

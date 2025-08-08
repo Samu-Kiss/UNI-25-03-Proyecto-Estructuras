@@ -4,8 +4,7 @@
 
 using namespace std;
 
-void comandoSalida()
-{
+void comandoSalida() {
     cout << termcolor::red << "Terminando Programa" << termcolor::reset << endl;
     exit(0);
 }

@@ -7,8 +7,7 @@
 
 using namespace std;
 
-bool valBaseRemota(string command)
-{
+bool valBaseRemota(string command) {
     int e1 = command.find(' ');
     if (e1 == -1)
         return false;
@@ -29,13 +28,13 @@ bool valBaseRemota(string command)
     if (!esEnteroPositivo(i) || !esEnteroPositivo(j))
         return false;
 
-    cout << termcolor::yellow << "[base_remota] Parámetros recibidos: i=" << i << ", j=" << j << termcolor::reset << endl;
+    cout << termcolor::yellow << "[base_remota] Parámetros recibidos: i=" << i << ", j=" << j << termcolor::reset <<
+            endl;
     return true;
 }
 
 // Convierte y parsea los parámetros de base_remota a enteros por referencia
-bool parseBaseRemota(const string &command, int &i, int &j)
-{
+bool parseBaseRemota(const string &command, int &i, int &j) {
     int e1 = command.find(' ');
     if (e1 == -1)
         return false;

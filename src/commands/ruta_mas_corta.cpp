@@ -8,8 +8,7 @@
 using namespace std;
 
 // Valida los cuatro parámetros y que sean enteros positivos
-bool valRutaMasCorta(string command)
-{
+bool valRutaMasCorta(string command) {
     int e1 = command.find(' ');
     if (e1 == -1)
         return false;
@@ -38,13 +37,13 @@ bool valRutaMasCorta(string command)
     if (!esEnteroPositivo(i) || !esEnteroPositivo(j) || !esEnteroPositivo(x) || !esEnteroPositivo(y))
         return false;
 
-    cout << termcolor::yellow << "[ruta_mas_corta] Parámetros recibidos: i=" << i << ", j=" << j << ", x=" << x << ", y=" << y << termcolor::reset << endl;
+    cout << termcolor::yellow << "[ruta_mas_corta] Parámetros recibidos: i=" << i << ", j=" << j << ", x=" << x <<
+            ", y=" << y << termcolor::reset << endl;
     return true;
 }
 
 // Convierte y parsea los parámetros de ruta_mas_corta a enteros por referencia
-bool parseRutaMasCorta(const string &command, int &i, int &j, int &x, int &y)
-{
+bool parseRutaMasCorta(const string &command, int &i, int &j, int &x, int &y) {
     int e1 = command.find(' ');
     if (e1 == -1)
         return false;
