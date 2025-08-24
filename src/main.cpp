@@ -3,6 +3,7 @@
 #include "../external/termcolor.hpp" // Librería para colores en la consola
 #include "../include/sistema.h"
 #include "../include/genoma.h"
+#include <climits>
 #include <sstream>
 #include <vector>
 
