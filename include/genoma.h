@@ -1,6 +1,5 @@
 // genoma.h
+#ifndef GENOMA_H
+#define GENOMA_H
 
-// ESTADOS:
-// Secuencia, conjunto de secuencias 
-
-//OPERACIONES:
+#endif GENOMA_H
