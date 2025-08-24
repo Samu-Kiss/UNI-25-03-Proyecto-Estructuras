@@ -50,7 +50,7 @@ int main() {
         getline(cin, input);
 
         // Comando de salida
-        if (input == "exit" || input == "quit" || input == "salir") {
+        if (input.rfind("exit", 0) == 0|| input.rfind("quit", 0) == 0 || input.rfind("salir", 0) == 0) {
             if (numParams(input) != 0) {
                 cout << termcolor::red << "Error: El comando 'salir' no requiere parámetros." << termcolor::reset << endl;
             } else {
@@ -58,7 +58,7 @@ int main() {
             }
         }
         // Comando de clear
-        else if (input == "clear") {
+        else if (input.rfind("clear", 0) == 0) {
             if (numParams(input) != 0) {
                 cout << termcolor::red << "Error: El comando 'clear' no requiere parámetros." << termcolor::reset << endl;
             } else {
@@ -135,8 +135,12 @@ int main() {
                 }
             }
         }
-        else if (input == "listar_secuencias") {
-            ListarSecuencias();
+        else if (input.rfind("listar_secuencias", 0) == 0) {
+            if (numParams(input) != 0) {
+                cout << termcolor::red << "Error: El comando 'listar_secuencias' no requiere parámetros. Uso: listar_secuencias" << termcolor::reset << endl;
+            } else {
+                ListarSecuencias();
+            }
         }
         else if (input.rfind("histograma", 0) == 0) {
             if (numParams(input) != 1) {
