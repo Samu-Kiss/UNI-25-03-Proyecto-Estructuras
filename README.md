@@ -42,7 +42,7 @@ Este proyecto implementa una consola interactiva para el análisis de secuencias
 
 #### En Windows (PowerShell)
 ```bash
-g++ src/main.cpp (Get-ChildItem src/commands/*.cpp) -o ./src/programa.exe && ./src/programa.exe 
+g++ (Get-ChildItem src/*.cpp) -o ./src/programa.exe && ./src/programa.exe 
 ```
 
 ## Uso
