@@ -189,16 +189,28 @@ bool Cargar(string nombre_archivo) {
     }
 
     string linea;
+    Secuencia nueva_secuencia;
+    bool firstLine;
+
     while (getline(archivo_entrada, linea)) {
         if (linea.empty()) {
             cerr << termcolor::yellow << "Advertencia: Línea vacía en el archivo " << nombre_archivo << termcolor::reset << endl;
             continue;
         }
-        // Aquí se procesaría cada línea del archivo
-        cout << "Leyendo línea: " << linea << endl; // Para depuración
-        // > Nombre de la secuencia
-        // Secuencia
 
+        //La linea que marca el inicio de la secuencia es ">{descripcion de la secuencia}"
+        if (linea[0] == '>') {
+            nueva_secuencia = Secuencia();
+            nueva_secuencia.descripcion = linea.substr(1);
+            firstLine = true;
+
+        } else {
+            if (firstLine) {
+                nueva_secuencia.ancho_linea = linea.length();
+                firstLine = false;
+            }
+            nueva_secuencia.bases.push_back(linea);
+        }
     }
 
     archivo_entrada.close();

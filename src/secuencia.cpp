@@ -6,6 +6,6 @@
 using namespace std;
 
 //Una secuencia tiene un nombre, bases (conjunto de cadenas), ancho linea (numero)
-string nombre;
-vector<vector<string>> bases;
+string descripcion;
+vector<string> bases;
 int ancho_linea;

@@ -8,8 +8,8 @@
 using namespace std;
 class Secuencia {
 public:
-    string nombre;
-    vector<vector<string>> bases;
+    string descripcion;
+    vector<string> bases;
     int ancho_linea;
 };
 
