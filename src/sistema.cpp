@@ -37,12 +37,12 @@ void Ayuda(const string &param){
                 << endl;
         cout << "  help, ayuda [comando]                                           - Mostrar esta ayuda o ayuda de un comando" << endl;
         cout << "  exit, quit, salir                                               - Salir de la consola" << endl;
-        cout << "  cargar <nombre_archivo.fasta>                                   - Cargar secuencias desde un archivo" << endl;
+        cout << "  cargar <nombre_archivo.fa>                                      - Cargar secuencias desde un archivo" << endl;
         cout << "  listar_secuencias                                               - Listar todas las secuencias en memoria" << endl;
         cout << "  histograma <descripcion_secuencia>                              - Mostrar histograma de una secuencia" << endl;
         cout << "  es_subsecuencia <subsecuencia>                                  - Verificar si existe una subsecuencia" << endl;
         cout << "  enmascarar <subsecuencia>                                       - Enmascarar una subsecuencia" << endl;
-        cout << "  guardar <nombre_archivo.fasta>                                  - Guardar secuencias en un archivo" << endl;
+        cout << "  guardar <nombre_archivo.fa>                                     - Guardar secuencias en un archivo" << endl;
         cout << "  codificar <nombre_archivo.fabin>                                - Codificar una secuencia" << endl;
         cout << "  decodificar <nombre_archivo.fabin>                              - Decodificar una secuencia" << endl;
         cout << "  ruta_mas_corta <descripcion_secuencia> <i> <j> <x> <y>          - Buscar ruta más corta" << endl;

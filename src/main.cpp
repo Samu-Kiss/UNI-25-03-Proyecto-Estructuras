@@ -81,12 +81,12 @@ int main() {
         // Comando de cargar
         else if (input.rfind("cargar", 0) == 0) {
             if (numParams(input) != 1) {
-                cout << termcolor::red << "Error: El comando 'cargar' requiere 1 parámetro. Uso: cargar <nombre_archivo.fasta>" << termcolor::reset << endl;
+                cout << termcolor::red << "Error: El comando 'cargar' requiere 1 parámetro. Uso: cargar <nombre_archivo.fa>" << termcolor::reset << endl;
             } else {
-                //Verificar si el archivo tiene la extensión .fasta
+                //Verificar si el archivo tiene la extensión .fa
                 string nombre_archivo = input.substr(input.find(' ') + 1);
-                if (nombre_archivo.substr(nombre_archivo.find_last_of('.') + 1) != "fasta") {
-                    cout << termcolor::red << "Error: El archivo debe tener la extensión .fasta" << termcolor::reset << endl;
+                if (nombre_archivo.substr(nombre_archivo.find_last_of('.') + 1) != "fa") {
+                    cout << termcolor::red << "Error: El archivo debe tener la extensión .fa" << termcolor::reset << endl;
                 } else {
                     Cargar(nombre_archivo);
                 }
@@ -95,13 +95,13 @@ int main() {
         // Comando de guardar
         else if (input.rfind("guardar", 0) == 0) {
             if (numParams(input) != 1) {
-                cout << termcolor::red << "Error: El comando 'guardar' requiere 1 parámetro. Uso: guardar <nombre_archivo.fasta>" << termcolor::reset << endl;
+                cout << termcolor::red << "Error: El comando 'guardar' requiere 1 parámetro. Uso: guardar <nombre_archivo.fa>" << termcolor::reset << endl;
             } else {
-                //Verificar si el archivo tiene la extensión .fasta
+                //Verificar si el archivo tiene la extensión .fa
 
                 string nombre_archivo = input.substr(input.find(' ') + 1);
-                if (nombre_archivo.substr(nombre_archivo.find_last_of('.') + 1) != "fasta") {
-                    cout << termcolor::red << "Error: El archivo debe tener la extensión .fasta" << termcolor::reset << endl;
+                if (nombre_archivo.substr(nombre_archivo.find_last_of('.') + 1) != "fa") {
+                    cout << termcolor::red << "Error: El archivo debe tener la extensión .fa" << termcolor::reset << endl;
                 } else {
                     Guardar(nombre_archivo);
                 }
