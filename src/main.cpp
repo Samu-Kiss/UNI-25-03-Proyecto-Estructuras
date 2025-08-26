@@ -202,6 +202,7 @@ bool Cargar(string nombre_archivo) {
         if (linea[0] == '>') {
             if (!nueva_secuencia.descripcion.empty()) {
                 genoma.secuencias.push_back(nueva_secuencia);
+                cout << termcolor::green << "\t[Cargar]: Secuencia añadida: " << nueva_secuencia.descripcion << termcolor::reset << endl;
             }
             nueva_secuencia = Secuencia();
             nueva_secuencia.descripcion = linea.substr(1);
