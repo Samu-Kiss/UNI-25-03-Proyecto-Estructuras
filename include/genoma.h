@@ -2,6 +2,13 @@
 #ifndef GENOMA_H
 #define GENOMA_H
 
+#include "../include/secuencia.h"
+
+class Genoma {
+public:
+
+vector<Secuencia> secuencias;
+
 //ListarSecuencias() -> void
 void ListarSecuencias();
 
@@ -19,5 +26,7 @@ void RutaMasCorta(const char* descripcion_secuencia, int i, int j, int x, int y)
 
 //BaseRemota (descripcion_secuencia, i, j) -> void
 void BaseRemota(const char* descripcion_secuencia, int i, int j);
+
+};
 
 #endif // GENOMA_H
