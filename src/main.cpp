@@ -184,25 +184,60 @@ void LimpiarPantalla() {
 bool Cargar(string nombre_archivo) {
     ifstream archivo_entrada(nombre_archivo);
     if (!archivo_entrada) {
-        cerr << termcolor::red << "Error: No se pudo abrir el archivo " << nombre_archivo << termcolor::reset << endl;
+        cerr << termcolor::red << "\t[Cargar/Error]: No se pudo abrir el archivo " << nombre_archivo << termcolor::reset << endl;
+        return false;
+    }
+
+    // Verificar si el archivo está vacío
+    if (archivo_entrada.peek() == EOF) {
+        cerr << termcolor::red << "\t[Cargar/Error]: El archivo " << nombre_archivo << " está vacío." << termcolor::reset << endl;
+        archivo_entrada.close();
         return false;
     }
 
     string linea;
     Secuencia nueva_secuencia;
     bool firstLine = false;
-
     while (getline(archivo_entrada, linea)) {
         if (linea.empty()) {
-            cerr << termcolor::yellow << "Advertencia: Línea vacía en el archivo " << nombre_archivo << termcolor::reset << endl;
+            // Línea vacía actúa como separador entre secuencias.
+            if (!nueva_secuencia.descripcion.empty() || !nueva_secuencia.bases.empty()) {
+                if (nueva_secuencia.descripcion.empty() && !nueva_secuencia.bases.empty()) {
+                    // Bases sin descripción: descartar y advertir.
+                    cerr << termcolor::yellow << "\t[Cargar/Advertencia]: Se encontró una secuencia sin descripción en el archivo "
+                         << nombre_archivo << ". Se descarta la secuencia." << termcolor::reset << endl;
+                } else if (!nueva_secuencia.descripcion.empty() && nueva_secuencia.bases.empty()) {
+                    // Descripción sin bases: descartar y advertir (requisito solicitado).
+                    cerr << termcolor::yellow << "\t[Cargar/Advertencia]: La secuencia '" << nueva_secuencia.descripcion
+                         << "' no contiene bases. Se descarta la secuencia." << termcolor::reset << endl;
+                } else {
+                    // Secuencia completa -> añadir.
+                    genoma.secuencias.push_back(nueva_secuencia);
+                    cout << termcolor::green << "\t[Cargar]: Secuencia añadida: " << nueva_secuencia.descripcion << termcolor::reset << endl;
+                }
+                nueva_secuencia = Secuencia();
+                firstLine = false;
+            } else {
+                // Línea vacía aislada
+                cerr << termcolor::yellow << "\t[Cargar/Advertencia]: Línea vacía en el archivo " << nombre_archivo << termcolor::reset << endl;
+            }
             continue;
         }
 
-        //La linea que marca el inicio de la secuencia es ">{descripcion de la secuencia}"
+        // La línea que marca el inicio de la secuencia es ">{descripcion de la secuencia}"
         if (linea[0] == '>') {
-            if (!nueva_secuencia.descripcion.empty()) {
-                genoma.secuencias.push_back(nueva_secuencia);
-                cout << termcolor::green << "\t[Cargar]: Secuencia añadida: " << nueva_secuencia.descripcion << termcolor::reset << endl;
+            // Si había una secuencia en construcción, procesarla antes de comenzar la nueva
+            if (!nueva_secuencia.descripcion.empty() || !nueva_secuencia.bases.empty()) {
+                if (nueva_secuencia.descripcion.empty() && !nueva_secuencia.bases.empty()) {
+                    cerr << termcolor::yellow << "\t[Cargar/Advertencia]: Se encontró una secuencia sin descripción en el archivo "
+                         << nombre_archivo << ". Se descarta la secuencia." << termcolor::reset << endl;
+                } else if (!nueva_secuencia.descripcion.empty() && nueva_secuencia.bases.empty()) {
+                    cerr << termcolor::yellow << "\t[Cargar/Advertencia]: La secuencia '" << nueva_secuencia.descripcion
+                         << "' no contiene bases. Se descarta la secuencia." << termcolor::reset << endl;
+                } else {
+                    genoma.secuencias.push_back(nueva_secuencia);
+                    cout << termcolor::green << "\t[Cargar]: Secuencia añadida: " << nueva_secuencia.descripcion << termcolor::reset << endl;
+                }
             }
             nueva_secuencia = Secuencia();
             nueva_secuencia.descripcion = linea.substr(1);
@@ -217,7 +252,28 @@ bool Cargar(string nombre_archivo) {
         }
     }
 
+    // Agregar la última secuencia si existe y es válida
+    if (!nueva_secuencia.descripcion.empty() || !nueva_secuencia.bases.empty()) {
+        if (nueva_secuencia.descripcion.empty() && !nueva_secuencia.bases.empty()) {
+            cerr << termcolor::yellow << "Advertencia: Se encontró una secuencia sin descripción en el archivo "
+                 << nombre_archivo << ". Se descarta la secuencia." << termcolor::reset << endl;
+        } else if (!nueva_secuencia.descripcion.empty() && nueva_secuencia.bases.empty()) {
+            cerr << termcolor::yellow << "Advertencia: La secuencia '" << nueva_secuencia.descripcion
+                 << "' no contiene bases. Se descarta la secuencia." << termcolor::reset << endl;
+        } else {
+            genoma.secuencias.push_back(nueva_secuencia);
+            cout << termcolor::green << "\t[Cargar]: Secuencia añadida: " << nueva_secuencia.descripcion << termcolor::reset << endl;
+        }
+    }
+
     archivo_entrada.close();
+
+    // Si después de todo no se cargó ninguna secuencia, informar al usuario
+    if (genoma.secuencias.empty()) {
+        cerr << termcolor::red << "Error: No se cargó ninguna secuencia desde el archivo " << nombre_archivo << termcolor::reset << endl;
+        return false;
+    }
+
     return true;
 }
 
