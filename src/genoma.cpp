@@ -1,10 +1,13 @@
-#include <iostream>
+#include "../include/secuencia.h"
 #include "../include/genoma.h"
+#include <iostream>
+#include <vector>
+#include <string>
 
 using namespace std;
 
 //ListarSecuencias() -> void
-void ListarSecuencias(){
+void Genoma::ListarSecuencias(){
     // TODO: Implementación de la lista de secuencias
 
     // Posibles estados:
@@ -13,7 +16,7 @@ void ListarSecuencias(){
 }
 
 //Histograma(descripcion_secuencia) -> void
-void Histograma(const char* descripcion_secuencia){
+void Genoma::Histograma(const char* descripcion_secuencia){
     // TODO: Implementación del histograma
 
     // Posibles estados:
@@ -22,7 +25,7 @@ void Histograma(const char* descripcion_secuencia){
 }
 
 //EsSubsecuencia(subsecuencia) -> booleano
-bool EsSubsecuencia(const char* subsecuencia){
+bool Genoma::EsSubsecuencia(const char* subsecuencia){
     // TODO: Implementación de la verificación de subsecuencia
 
     // Posibles estados:
@@ -33,7 +36,7 @@ bool EsSubsecuencia(const char* subsecuencia){
 }
 
 //Enmascarar(subsecuencia) -> void
-void Enmascarar(const char* subsecuencia){
+void Genoma::Enmascarar(const char* subsecuencia){
     // TODO: Implementación de la enmascaración
 
     // Posibles estados:
@@ -43,13 +46,13 @@ void Enmascarar(const char* subsecuencia){
 }
 
 //RutaMasCorta(descripcion_secuencia, i, j, x, y) -> void
-void RutaMasCorta(const char* descripcion_secuencia, int i, int j, int x, int y){
+void Genoma::RutaMasCorta(const char* descripcion_secuencia, int i, int j, int x, int y){
     //TODO: Implementación de la ruta más corta
     //ESTO SE HACE EN LA SEGUNDA ENTREGA
 }
 
 //BaseRemota (descripcion_secuencia, i, j) -> void
-void BaseRemota(const char* descripcion_secuencia, int i, int j){
+void Genoma::BaseRemota(const char* descripcion_secuencia, int i, int j){
     //TODO: Implementación de la base remota
     //ESTO SE HACE EN LA SEGUNDA ENTREGA
 }
