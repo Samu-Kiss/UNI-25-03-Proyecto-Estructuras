@@ -9,7 +9,7 @@ using namespace std;
 class Secuencia {
 public:
     string descripcion;
-    vector<string> bases;
+    vector<char> bases;
     int ancho_linea;
 };
 

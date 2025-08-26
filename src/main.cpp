@@ -252,7 +252,9 @@ bool Cargar(string nombre_archivo) {
                 nueva_secuencia.ancho_linea = linea.length();
                 firstLine = false;
             }
-            nueva_secuencia.bases.push_back(linea);
+            for (char base : linea) {
+                nueva_secuencia.bases.push_back(base);
+            }
         }
     }
 
