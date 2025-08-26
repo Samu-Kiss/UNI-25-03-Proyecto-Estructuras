@@ -42,7 +42,7 @@ bool parsePositiveInt(const string &s, int &out) {
     }
 }
 
-// Función para // Función para guardar un archivo
+// Función para guardar un archivo
 void Guardar(string nombre_archivo) {
     // TODO: Lógica para guardar el archivo
 
@@ -190,7 +190,7 @@ bool Cargar(string nombre_archivo) {
 
     string linea;
     Secuencia nueva_secuencia;
-    bool firstLine;
+    bool firstLine = false;
 
     while (getline(archivo_entrada, linea)) {
         if (linea.empty()) {
@@ -200,6 +200,9 @@ bool Cargar(string nombre_archivo) {
 
         //La linea que marca el inicio de la secuencia es ">{descripcion de la secuencia}"
         if (linea[0] == '>') {
+            if (!nueva_secuencia.descripcion.empty()) {
+                genoma.secuencias.push_back(nueva_secuencia);
+            }
             nueva_secuencia = Secuencia();
             nueva_secuencia.descripcion = linea.substr(1);
             firstLine = true;

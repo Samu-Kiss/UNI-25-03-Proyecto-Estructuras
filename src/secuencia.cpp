@@ -4,8 +4,3 @@
 #include <vector>
 
 using namespace std;
-
-//Una secuencia tiene un nombre, bases (conjunto de cadenas), ancho linea (numero)
-string descripcion;
-vector<string> bases;
-int ancho_linea;

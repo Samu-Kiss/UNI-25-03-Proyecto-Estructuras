@@ -6,9 +6,6 @@
 
 using namespace std;
 
-//Genoma contiene una lista de secuencias
-vector<Secuencia> secuencias;
-
 //ListarSecuencias() -> void
 void Genoma::ListarSecuencias(){
     // TODO: Implementación de la lista de secuencias
