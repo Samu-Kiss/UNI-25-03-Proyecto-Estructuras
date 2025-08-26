@@ -52,11 +52,13 @@ void Guardar(string nombre_archivo) {
     // Error al guardar el archivo
 }
 
+// Función para codificar un archivo
 void Codificar(std::string nombre_archivo) {
     //TODO: Implementación de la codificación
     //ESTO SE HACE EN LA SEGUNDA ENTREGA
 }
 
+// Función para decodificar un archivo
 void Decodificar(std::string nombre_archivo) {
     //TODO: Implementación de la decodificación
     //ESTO SE HACE EN LA SEGUNDA ENTREGA
@@ -202,35 +204,6 @@ bool Cargar(string nombre_archivo) {
     archivo_entrada.close();
     return true;
 }
-
-// Función para guardar un archivo
-void Guardar(string nombre_archivo) {
-    // TODO: Lógica para guardar el archivo
-
-    // Posibles estados:
-    // No hay secuencias cargadas
-    // Archivo guardado exitosamente
-    // Error al guardar el archivo
-}
-
-// Función para codificar un archivo
-void Codificar(std::string nombre_archivo) {
-    //TODO: Implementación de la codificación
-    //ESTO SE HACE EN LA SEGUNDA ENTREGA
-}
-
-// Función para decodificar un archivo
-void Decodificar(std::string nombre_archivo) {
-    //TODO: Implementación de la decodificación
-    //ESTO SE HACE EN LA SEGUNDA ENTREGA
-}
-
-// Función para salir del programa
-void Salir() {
-    cout << "Saliendo del programa..." << endl;
-    exit(0);
-}
-
 
 int main() {
     Inicializar();
