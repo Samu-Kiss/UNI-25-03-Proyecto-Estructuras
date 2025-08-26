@@ -198,6 +198,8 @@ bool Cargar(string nombre_archivo) {
     string linea;
     Secuencia nueva_secuencia;
     bool firstLine = false;
+    int countAdded = 0; // contador de secuencias añadidas en esta carga
+
     while (getline(archivo_entrada, linea)) {
         if (linea.empty()) {
             // Línea vacía actúa como separador entre secuencias.
@@ -213,6 +215,7 @@ bool Cargar(string nombre_archivo) {
                 } else {
                     // Secuencia completa -> añadir.
                     genoma.secuencias.push_back(nueva_secuencia);
+                    ++countAdded;
                     cout << termcolor::green << "\t[Cargar]: Secuencia añadida: " << nueva_secuencia.descripcion << termcolor::reset << endl;
                 }
                 nueva_secuencia = Secuencia();
@@ -236,6 +239,7 @@ bool Cargar(string nombre_archivo) {
                          << "' no contiene bases. Se descarta la secuencia." << termcolor::reset << endl;
                 } else {
                     genoma.secuencias.push_back(nueva_secuencia);
+                    ++countAdded;
                     cout << termcolor::green << "\t[Cargar]: Secuencia añadida: " << nueva_secuencia.descripcion << termcolor::reset << endl;
                 }
             }
@@ -262,16 +266,19 @@ bool Cargar(string nombre_archivo) {
                  << "' no contiene bases. Se descarta la secuencia." << termcolor::reset << endl;
         } else {
             genoma.secuencias.push_back(nueva_secuencia);
+            ++countAdded;
             cout << termcolor::green << "\t[Cargar]: Secuencia añadida: " << nueva_secuencia.descripcion << termcolor::reset << endl;
         }
     }
 
     archivo_entrada.close();
 
-    // Si después de todo no se cargó ninguna secuencia, informar al usuario
-    if (genoma.secuencias.empty()) {
+    // Informar cuántas secuencias se añadieron en esta operación
+    if (countAdded == 0) {
         cerr << termcolor::red << "Error: No se cargó ninguna secuencia desde el archivo " << nombre_archivo << termcolor::reset << endl;
         return false;
+    } else {
+        cout << termcolor::green << "\t[Cargar]: Se añadieron " << countAdded << " secuencia(s) desde '" << nombre_archivo << "'." << termcolor::reset << endl;
     }
 
     return true;
