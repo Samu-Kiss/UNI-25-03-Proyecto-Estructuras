@@ -1,3 +1,4 @@
+#include "./termcolor.hpp"
 #include "./secuencia.h"
 #include "./genoma.h"
 #include <iostream>
@@ -13,6 +14,18 @@ void Genoma::ListarSecuencias(){
     // Posibles estados:
     // No hay secuencias cargadas
     // Resultado exitoso: Hay n secuencias cargadas
+    if (secuencias.empty()) {
+        cout << termcolor::yellow << "\t[Listar Secuencias/Advertencia]: No hay secuencias cargadas." << termcolor::reset << endl;
+    } else {
+        cout << "Secuencias cargadas:" << endl;
+        for (const Secuencia& secuencia : secuencias) {
+            int cont = 0;
+            for (const char& base : secuencia.bases) {
+                if (base == '-') { cont++; }
+            }
+            cout << termcolor::cyan << "\t[Listar Secuencias]: La secuencia " << secuencia.descripcion << (cont > 0 ? " tiene al menos " : " tiene ") << secuencia.bases.size() - cont << " bases." << termcolor::reset << endl;
+        }
+    }
 }
 
 //Histograma(descripcion_secuencia) -> void
