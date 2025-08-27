@@ -16,25 +16,17 @@ Este proyecto implementa una consola interactiva para el análisis de secuencias
 
 ```
 ├── src/
-│   ├── main.cpp                    # Punto de entrada del programa
-│   └── commands/                   # Implementación de comandos
-│       ├── ayuda.cpp              # Sistema de ayuda
-│       ├── cargar.cpp             # Carga de secuencias desde archivos
-│       ├── listar_secuencias.cpp  # Listado de secuencias en memoria
-│       ├── histograma.cpp         # Análisis estadístico
-│       ├── es_subsecuencia.cpp    # Verificación de subsecuencias
-│       ├── enmascarar.cpp         # Enmascaramiento de secuencias
-│       ├── codificar.cpp          # Codificación de secuencias
-│       ├── decodificar.cpp        # Decodificación de secuencias
-│       ├── ruta_mas_corta.cpp     # Algoritmo de ruta más corta
-│       ├── base_remota.cpp        # Cálculo de bases remotas
-│       └── utils.cpp              # Utilidades auxiliares
+│   ├── main.cpp               # Punto de entrada del programa
+│   ├── genoma.cpp             # Implementación de la lógica de genomas
+│   ├── secuencia.cpp          # Operaciones sobre secuencias
+│   └── programa.exe           # Ejecutable generado (opcional)
 ├── include/
-│   ├── commands.h                 # Declaraciones de comandos
-│   └── utils.h                   # Declaraciones de utilidades
+│   ├── genoma.h               # Declaraciones relacionadas a genomas
+│   └── secuencia.h            # Declaraciones de secuencias
 ├── external/
-│   └── termcolor.hpp             # Librería para colores en terminal
-└── CMakeLists.txt               # Configuración de CMake
+│   └── termcolor.hpp          # Librería para colores en terminal
+├── archivosFASTA/             # Archivos de ejemplo en formato FASTA
+└── CMakeLists.txt             # Configuración de CMake
 ```
 
 ## Compilación
