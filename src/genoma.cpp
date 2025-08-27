@@ -1,5 +1,5 @@
-#include "../include/secuencia.h"
-#include "../include/genoma.h"
+#include "./secuencia.h"
+#include "./genoma.h"
 #include <iostream>
 #include <vector>
 #include <string>

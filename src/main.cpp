@@ -1,6 +1,6 @@
-#include "../external/termcolor.hpp" // Librería para colores en la consola
-#include "../include/secuencia.h"
-#include "../include/genoma.h"
+#include "./termcolor.hpp" // Librería para colores en la consola
+#include "./secuencia.h"
+#include "./genoma.h"
 #include <iostream>
 #include <string>
 #include <climits>

@@ -18,8 +18,7 @@ Este proyecto implementa una consola interactiva para el análisis de secuencias
 ├── src/
 │   ├── main.cpp               # Punto de entrada del programa
 │   ├── genoma.cpp             # Implementación de la lógica de genomas
-│   ├── secuencia.cpp          # Operaciones sobre secuencias
-│   └── programa.exe           # Ejecutable generado (opcional)
+│   └── secuencia.cpp          # Operaciones sobre secuencias
 ├── include/
 │   ├── genoma.h               # Declaraciones relacionadas a genomas
 │   └── secuencia.h            # Declaraciones de secuencias
