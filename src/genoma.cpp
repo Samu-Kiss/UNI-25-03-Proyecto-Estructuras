@@ -89,7 +89,7 @@ void Genoma::Enmascarar(const char* subsecuencia){
                 }
                 ++enmascaradasEnSecuencia;
                 ++totalEnmascaradas;
-                totalBasesEnmascaradas += static_cast<long>(largoSub);
+                totalBasesEnmascaradas += largoSub;
                 i += largoSub; // evitar solapamientos
             } else {
                 ++i;
