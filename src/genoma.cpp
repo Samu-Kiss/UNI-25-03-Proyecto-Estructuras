@@ -45,7 +45,48 @@ bool Genoma::EsSubsecuencia(const char* subsecuencia){
     // No hay secuencias cargadas
     // La subsecuencia no existe
     // Varias subsecuencias
-    return true; // Retornar true si es subsecuencia
+
+    if (secuencias.empty()){
+        cout << "No hay secuencias cargadas en memoria" << endl;
+        return false;
+    }
+
+    size_t tam = strlen(subsecuencia);
+	
+    if (tam == 0){
+        cout << "La subsecuencia no existe dentro de las secuencias cargadas en memoria" << endl;
+        return false;
+    }
+
+    int total = 0;
+
+    for (size_t s = 0; s < secuencias.size(); s++){
+		
+        const vector<char>& scs = secuencias[s].bases;
+
+        for (size_t i = 0; i + tam <= scs.size(); i++){
+			
+            size_t k = 0;
+			
+            while (k < tam && scs[i + k] == subsecuencia[k]) {
+				k++;
+			}
+			
+            if (k == tam) {
+                total++;
+            }
+			
+        }
+    }
+
+    if (total == 0){
+        cout << "La subsecuencia no existe dentro de las secuencias cargadas en memoria" << endl;
+        return false;
+    } else {
+        cout << "La subsecuencia dada se repite " << total << " dentro de las secuencias cargadas en memoria" << endl;
+        return true;
+    }
+    
 }
 
 //Enmascarar(subsecuencia) -> void
