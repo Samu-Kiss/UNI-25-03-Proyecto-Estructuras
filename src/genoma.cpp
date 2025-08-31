@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <cstring>
 
 using namespace std;
 
@@ -50,12 +51,82 @@ bool Genoma::EsSubsecuencia(const char* subsecuencia){
 
 //Enmascarar(subsecuencia) -> void
 void Genoma::Enmascarar(const char* subsecuencia){
-    // TODO: Implementación de la enmascaración
+    // Validaciones básicas
+    if (secuencias.empty()) {
+        cout << termcolor::yellow << "\t[Enmascarar/Advertencia]: No hay secuencias cargadas." << termcolor::reset << endl;
+        return;
+    }
+    if (subsecuencia == nullptr || subsecuencia[0] == '\0') {
+        cout << termcolor::yellow << "\t[Enmascarar/Advertencia]: Subsecuencia vacía o inválida." << termcolor::reset << endl;
+        return;
+    }
 
-    // Posibles estados:
-    // No hay secuencias cargadas
-    // No se enmascararon subsecuencias
-    // Varias subsecuencias enmascaradas
+    size_t largoSub = std::strlen(subsecuencia);
+    if (largoSub == 0) { // redundante, pero por claridad
+        cout << termcolor::yellow << "\t[Enmascarar/Advertencia]: Subsecuencia vacía." << termcolor::reset << endl;
+        return;
+    }
+
+    long totalEnmascaradas = 0; // número total de coincidencias (veces) en todas las secuencias
+    long totalBasesEnmascaradas = 0; // cantidad total de bases reemplazadas por 'X'
+
+    for (Secuencia &secuencia : secuencias) {
+        if (secuencia.bases.size() < largoSub) continue; // imposible que exista
+
+        long enmascaradasEnSecuencia = 0;
+        // Búsqueda lineal no solapada; avance por largoSub si matchea, sino 1
+        for (size_t i = 0; i + largoSub <= secuencia.bases.size(); ) {
+            bool coincide = true;
+            for (size_t k = 0; k < largoSub; ++k) {
+                if (secuencia.bases[i + k] != subsecuencia[k]) { coincide = false; break; }
+            }
+            if (coincide) {
+                // Enmascarar
+                for (size_t k = 0; k < largoSub; ++k) {
+                    secuencia.bases[i + k] = 'X';
+                }
+                ++enmascaradasEnSecuencia;
+                ++totalEnmascaradas;
+                totalBasesEnmascaradas += static_cast<long>(largoSub);
+                i += largoSub; // evitar solapamientos; cambiar a i++ si se quisieran permitir
+            } else {
+                ++i;
+            }
+        }
+        if (enmascaradasEnSecuencia > 0) {
+            cout << termcolor::cyan
+                 << "\t[Enmascarar]: La subsecuencia '" << subsecuencia << "' se enmascaró "
+                 << enmascaradasEnSecuencia << (enmascaradasEnSecuencia == 1 ? " vez" : " veces")
+                 << " en la secuencia '" << secuencia.descripcion << "'." << termcolor::reset << endl;
+
+            // Imprimir la secuencia resultante enmascarada con el ancho de línea definido
+            if (secuencia.ancho_linea <= 0) {
+                secuencia.ancho_linea = 80; // valor por defecto de respaldo
+            }
+            cout << "\t[Enmascarar]: Secuencia enmascarada ('" << secuencia.descripcion << "'):" << endl;
+            cout << termcolor::magenta;
+            int col = 0;
+            for (char b : secuencia.bases) {
+                cout << b;
+                if (++col == secuencia.ancho_linea) {
+                    cout << '\n';
+                    col = 0;
+                }
+            }
+            if (col != 0) cout << '\n';
+            cout << termcolor::reset;
+        }
+    }
+
+    if (totalEnmascaradas == 0) {
+        cout << termcolor::yellow << "\t[Enmascarar/Advertencia]: No se encontraron coincidencias de '" << subsecuencia << "'." << termcolor::reset << endl;
+    } else {
+        cout << termcolor::green
+             << "\t[Enmascarar]: Se enmascaró la subsecuencia '" << subsecuencia << "' "
+             << totalEnmascaradas << (totalEnmascaradas == 1 ? " vez" : " veces")
+             << " en total (" << totalBasesEnmascaradas << " bases reemplazadas)." << termcolor::reset << endl;
+    }
+
 }
 
 //RutaMasCorta(descripcion_secuencia, i, j, x, y) -> void
