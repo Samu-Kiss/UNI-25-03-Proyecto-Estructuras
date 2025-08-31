@@ -60,6 +60,8 @@ void Genoma::Enmascarar(const char* subsecuencia){
         cout << termcolor::yellow << "\t[Enmascarar/Advertencia]: Subsecuencia vacía o inválida." << termcolor::reset << endl;
         return;
     }
+
+    size_t largoSub = strlen(subsecuencia);
     
     long totalEnmascaradas = 0; // número total de coincidencias (veces) en todas las secuencias
     long totalBasesEnmascaradas = 0; // cantidad total de bases reemplazadas por 'X'
