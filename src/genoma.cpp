@@ -61,7 +61,7 @@ void Genoma::Enmascarar(const char* subsecuencia){
         return;
     }
 
-    size_t largoSub = std::strlen(subsecuencia);
+    size_t largoSub = strlen(subsecuencia);
     if (largoSub == 0) { // redundante, pero por claridad
         cout << termcolor::yellow << "\t[Enmascarar/Advertencia]: Subsecuencia vacía." << termcolor::reset << endl;
         return;
@@ -88,33 +88,17 @@ void Genoma::Enmascarar(const char* subsecuencia){
                 ++enmascaradasEnSecuencia;
                 ++totalEnmascaradas;
                 totalBasesEnmascaradas += static_cast<long>(largoSub);
-                i += largoSub; // evitar solapamientos; cambiar a i++ si se quisieran permitir
+                i += largoSub; // evitar solapamientos
             } else {
                 ++i;
             }
         }
+
         if (enmascaradasEnSecuencia > 0) {
             cout << termcolor::cyan
                  << "\t[Enmascarar]: La subsecuencia '" << subsecuencia << "' se enmascaró "
                  << enmascaradasEnSecuencia << (enmascaradasEnSecuencia == 1 ? " vez" : " veces")
                  << " en la secuencia '" << secuencia.descripcion << "'." << termcolor::reset << endl;
-
-            // Imprimir la secuencia resultante enmascarada con el ancho de línea definido
-            if (secuencia.ancho_linea <= 0) {
-                secuencia.ancho_linea = 80; // valor por defecto de respaldo
-            }
-            cout << "\t[Enmascarar]: Secuencia enmascarada ('" << secuencia.descripcion << "'):" << endl;
-            cout << termcolor::magenta;
-            int col = 0;
-            for (char b : secuencia.bases) {
-                cout << b;
-                if (++col == secuencia.ancho_linea) {
-                    cout << '\n';
-                    col = 0;
-                }
-            }
-            if (col != 0) cout << '\n';
-            cout << termcolor::reset;
         }
     }
 
