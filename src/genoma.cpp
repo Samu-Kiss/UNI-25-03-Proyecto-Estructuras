@@ -77,9 +77,11 @@ void Genoma::Enmascarar(const char* subsecuencia){
         // Búsqueda lineal no solapada; avance por largoSub si matchea, sino 1
         for (size_t i = 0; i + largoSub <= secuencia.bases.size(); ) {
             bool coincide = true;
-            for (size_t k = 0; k < largoSub; ++k) {
-                if (secuencia.bases[i + k] != subsecuencia[k]) { coincide = false; break; }
-            }
+            // Use std::equal for faster/more optimized comparison of the range.
+            // (Requires #include <algorithm> in the file.)
+            coincide = equal(secuencia.bases.begin() + i,
+                             secuencia.bases.begin() + i + largoSub,
+                             subsecuencia);
             if (coincide) {
                 // Enmascarar
                 for (size_t k = 0; k < largoSub; ++k) {
