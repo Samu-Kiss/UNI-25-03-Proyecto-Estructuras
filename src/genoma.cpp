@@ -18,7 +18,6 @@ void Genoma::ListarSecuencias(){
     if (secuencias.empty()) {
         cout << termcolor::yellow << "\t[Listar Secuencias/Advertencia]: No hay secuencias cargadas." << termcolor::reset << endl;
     } else {
-        cout << "Secuencias cargadas:" << endl;
         for (const Secuencia& secuencia : secuencias) {
             int cont = 0;
             for (const char& base : secuencia.bases) {
@@ -85,17 +84,14 @@ bool Genoma::EsSubsecuencia(const char* subsecuencia){
     // Varias subsecuencias
 
     if (secuencias.empty()) {
-        cout << termcolor::yellow << "\t[Es Subsecuencia/Advertencia]: No hay secuencias cargadas en memoria" <<
-                termcolor::reset << endl;
+        cout << termcolor::yellow << "\t[Es Subsecuencia/Advertencia]: No hay secuencias cargadas en memoria" << termcolor::reset << endl;
         return false;
     }
 
     size_t tam = strlen(subsecuencia);
 
     if (tam == 0) {
-        cout << termcolor::yellow <<
-                "\t[Es Subsecuencia/Advertencia]: La subsecuencia no existe dentro de las secuencias cargadas en memoria"
-                << termcolor::reset << endl;
+        cout << termcolor::yellow << "\t[Es Subsecuencia/Advertencia]: La subsecuencia no existe dentro de las secuencias cargadas en memoria" << termcolor::reset << endl;
         return false;
     }
 
@@ -119,12 +115,10 @@ bool Genoma::EsSubsecuencia(const char* subsecuencia){
 
     if (total == 0) {
         cout << termcolor::yellow <<
-                "\t[Es Subsecuencia/Advertencia]: La subsecuencia no existe dentro de las secuencias cargadas en memoria"
-                << termcolor::reset << endl;
+                "\t[Es Subsecuencia/Advertencia]: La subsecuencia no existe dentro de las secuencias cargadas en memoria" << termcolor::reset << endl;
         return false;
     } else {
-        cout << termcolor::cyan << "\t[Es Subsecuencia]: La subsecuencia dada se repite " << total <<
-                " veces dentro de las secuencias cargadas en memoria" << termcolor::reset << endl;
+        cout << termcolor::cyan << "\t[Es Subsecuencia]: La subsecuencia dada se repite " << total << " veces dentro de las secuencias cargadas en memoria" << termcolor::reset << endl;
         return true;
     }
 }
@@ -155,9 +149,7 @@ void Genoma::Enmascarar(const char* subsecuencia){
             bool coincide = true;
             // Use std::equal for faster/more optimized comparison of the range.
             // (Requires #include <algorithm> in the file.)
-            coincide = equal(secuencia.bases.begin() + i,
-                             secuencia.bases.begin() + i + largoSub,
-                             subsecuencia);
+            coincide = equal(secuencia.bases.begin() + i, secuencia.bases.begin() + i + largoSub, subsecuencia);
             if (coincide) {
                 // Enmascarar
                 for (size_t k = 0; k < largoSub; ++k) {
@@ -173,20 +165,14 @@ void Genoma::Enmascarar(const char* subsecuencia){
         }
 
         if (enmascaradasEnSecuencia > 0) {
-            cout << termcolor::cyan
-                 << "\t[Enmascarar]: La subsecuencia '" << subsecuencia << "' se enmascaró "
-                 << enmascaradasEnSecuencia << (enmascaradasEnSecuencia == 1 ? " vez" : " veces")
-                 << " en la secuencia '" << secuencia.descripcion << "'." << termcolor::reset << endl;
+            cout << termcolor::cyan << "\t[Enmascarar]: La subsecuencia '" << subsecuencia << "' se enmascaró " << enmascaradasEnSecuencia << (enmascaradasEnSecuencia == 1 ? " vez" : " veces") << " en la secuencia '" << secuencia.descripcion << "'." << termcolor::reset << endl;
         }
     }
 
     if (totalEnmascaradas == 0) {
         cout << termcolor::yellow << "\t[Enmascarar/Advertencia]: No se encontraron coincidencias de '" << subsecuencia << "'." << termcolor::reset << endl;
     } else {
-        cout << termcolor::green
-             << "\t[Enmascarar]: Se enmascaró la subsecuencia '" << subsecuencia << "' "
-             << totalEnmascaradas << (totalEnmascaradas == 1 ? " vez" : " veces")
-             << " en total (" << totalBasesEnmascaradas << " bases reemplazadas)." << termcolor::reset << endl;
+        cout << termcolor::green << "\t[Enmascarar]: Se enmascaró la subsecuencia '" << subsecuencia << "' " << totalEnmascaradas << (totalEnmascaradas == 1 ? " vez" : " veces") << " en total (" << totalBasesEnmascaradas << " bases reemplazadas)." << termcolor::reset << endl;
     }
 
 }
