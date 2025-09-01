@@ -233,11 +233,9 @@ bool Cargar(string nombre_archivo) {
             // Si había una secuencia en construcción, procesarla antes de comenzar la nueva
             if (!nueva_secuencia.descripcion.empty() || !nueva_secuencia.bases.empty()) {
                 if (nueva_secuencia.descripcion.empty() && !nueva_secuencia.bases.empty()) {
-                    cerr << termcolor::yellow << "\t[Cargar/Advertencia]: Se encontró una secuencia sin descripción en el archivo "
-                         << nombre_archivo << ". Se descarta la secuencia." << termcolor::reset << endl;
+                    cerr << termcolor::yellow << "\t[Cargar/Advertencia]: Se encontró una secuencia sin descripción en el archivo " << nombre_archivo << ". Se descarta la secuencia." << termcolor::reset << endl;
                 } else if (!nueva_secuencia.descripcion.empty() && nueva_secuencia.bases.empty()) {
-                    cerr << termcolor::yellow << "\t[Cargar/Advertencia]: La secuencia '" << nueva_secuencia.descripcion
-                         << "' no contiene bases. Se descarta la secuencia." << termcolor::reset << endl;
+                    cerr << termcolor::yellow << "\t[Cargar/Advertencia]: La secuencia '" << nueva_secuencia.descripcion << "' no contiene bases. Se descarta la secuencia." << termcolor::reset << endl;
                 } else {
                     genoma.secuencias.push_back(nueva_secuencia);
                     ++countAdded;
@@ -262,11 +260,9 @@ bool Cargar(string nombre_archivo) {
     // Agregar la última secuencia si existe y es válida
     if (!nueva_secuencia.descripcion.empty() || !nueva_secuencia.bases.empty()) {
         if (nueva_secuencia.descripcion.empty() && !nueva_secuencia.bases.empty()) {
-            cerr << termcolor::yellow << "Advertencia: Se encontró una secuencia sin descripción en el archivo "
-                 << nombre_archivo << ". Se descarta la secuencia." << termcolor::reset << endl;
+            cerr << termcolor::yellow << "Advertencia: Se encontró una secuencia sin descripción en el archivo " << nombre_archivo << ". Se descarta la secuencia." << termcolor::reset << endl;
         } else if (!nueva_secuencia.descripcion.empty() && nueva_secuencia.bases.empty()) {
-            cerr << termcolor::yellow << "Advertencia: La secuencia '" << nueva_secuencia.descripcion
-                 << "' no contiene bases. Se descarta la secuencia." << termcolor::reset << endl;
+            cerr << termcolor::yellow << "Advertencia: La secuencia '" << nueva_secuencia.descripcion << "' no contiene bases. Se descarta la secuencia." << termcolor::reset << endl;
         } else {
             genoma.secuencias.push_back(nueva_secuencia);
             ++countAdded;
