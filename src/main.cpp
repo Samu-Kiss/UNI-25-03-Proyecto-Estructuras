@@ -46,7 +46,7 @@ bool parsePositiveInt(const string &s, int &out) {
 }
 
 // Función para guardar un archivo
-void Guardar(string nombre_archivo) {
+void Guardar(const string &nombre_archivo) {
     // TODO: Lógica para guardar el archivo
 
     // Posibles estados:
@@ -56,13 +56,13 @@ void Guardar(string nombre_archivo) {
 }
 
 // Función para codificar un archivo
-void Codificar(std::string nombre_archivo) {
+void Codificar(const string &nombre_archivo) {
     //TODO: Implementación de la codificación
     //ESTO SE HACE EN LA SEGUNDA ENTREGA
 }
 
 // Función para decodificar un archivo
-void Decodificar(std::string nombre_archivo) {
+void Decodificar(const string &nombre_archivo) {
     //TODO: Implementación de la decodificación
     //ESTO SE HACE EN LA SEGUNDA ENTREGA
 }
@@ -172,7 +172,7 @@ void LimpiarPantalla() {
 }
 
 // Función para cargar un archivo
-bool Cargar(string nombre_archivo) {
+bool Cargar(const string &nombre_archivo) {
     genoma.secuencias.clear();
     ifstream archivo_entrada(nombre_archivo);
     if (!archivo_entrada) {

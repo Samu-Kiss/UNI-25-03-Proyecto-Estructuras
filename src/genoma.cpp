@@ -147,8 +147,7 @@ void Genoma::Enmascarar(const char *subsecuencia) {
         for (size_t i = 0; i + largoSub <= secuencia.bases.size();) {
             // Use std::equal for faster/more optimized comparison of the range.
             // (Requires #include <algorithm> in the file.)
-            bool coincide = equal(secuencia.bases.begin() + i, secuencia.bases.begin() + i + largoSub, subsecuencia);
-            if (coincide) {
+            if (equal(secuencia.bases.begin() + i, secuencia.bases.begin() + i + largoSub, subsecuencia)) {
                 // Enmascarar
                 for (size_t k = 0; k < largoSub; ++k) {
                     secuencia.bases[i + k] = 'X';
