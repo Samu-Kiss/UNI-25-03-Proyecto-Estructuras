@@ -46,7 +46,7 @@ size_t tam = secuencias.size();
     }
 	
     if (tam == secuencias.size()) { //No entro al if, no encontro la secuencia
-        cout << "Secuencia invalida" << endl;
+        cout << termcolor::red << "\t[Histograma/Error]: Secuencia inválida o inexistente" << termcolor::reset << endl;
 		return;  //Se sale
     }
 
@@ -70,7 +70,7 @@ size_t tam = secuencias.size();
     }
 
     for (int i = 0; i < 18; ++i) {
-        cout << tabla[i] << " : " << frec[i] << endl;
+        cout << termcolor::cyan << "\t[Histograma/"<< secuencias[tam].descripcion <<"]: " << tabla[i] << termcolor::reset << " -> "  << frec[i] << endl;
     }
     
 }
