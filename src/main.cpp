@@ -182,6 +182,7 @@ void LimpiarPantalla() {
 
 // Función para cargar un archivo
 bool Cargar(string nombre_archivo) {
+    genoma.secuencias.clear();
     ifstream archivo_entrada(nombre_archivo);
     if (!archivo_entrada) {
         cerr << termcolor::red << "\t[Cargar/Error]: No se pudo abrir el archivo " << nombre_archivo << termcolor::reset << endl;
