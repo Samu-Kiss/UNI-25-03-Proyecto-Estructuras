@@ -321,7 +321,9 @@ int main() {
         }
         // Comando de guardar
         else if (input.rfind("guardar", 0) == 0) {
-            if (numParams(input) != 1) { LOG_ERROR("Guardar", "El comando 'guardar' requiere 1 parámetro. Uso: guardar <nombre_archivo.fa>"); } else {
+            if (numParams(input) != 1) { 
+                LOG_ERROR("Guardar", "El comando 'guardar' requiere 1 parámetro. Uso: guardar <nombre_archivo.fa>"); 
+            } else {
                 string nombre_archivo = input.substr(input.find(' ') + 1);
                 if (nombre_archivo.substr(nombre_archivo.find_last_of('.') + 1) != "fa") {
                     LOG_ERROR("Guardar", "El archivo debe tener la extensión .fa");
@@ -385,24 +387,36 @@ int main() {
         }
         // Comando de ruta_mas_corta
         else if (input.rfind("ruta_mas_corta", 0) == 0) {
-            if (numParams(input) != 5) { LOG_ERROR("RutaMasCorta", "El comando 'ruta_mas_corta' requiere 5 parámetros. Uso: ruta_mas_corta <descripcion_secuencia> <i> <j> <x> <y>"); } else {
+            if (numParams(input) != 5) {
+                LOG_ERROR("RutaMasCorta", "El comando 'ruta_mas_corta' requiere 5 parámetros. Uso: ruta_mas_corta <descripcion_secuencia> <i> <j> <x> <y>");
+            } else {
                 istringstream iss(input);
                 string cmd, descripcion;
                 string si, sj, sx, sy;
                 iss >> cmd >> descripcion >> si >> sj >> sx >> sy;
                 int i, j, x, y;
-                if (!parsePositiveInt(si, i) || !parsePositiveInt(sj, j) || !parsePositiveInt(sx, x) || !parsePositiveInt(sy, y)) { LOG_ERROR("RutaMasCorta", "Los parámetros i, j, x, y deben ser enteros positivos (por ejemplo: 1 2 3 4)."); } else { genoma.RutaMasCorta(descripcion.c_str(), i, j, x, y); }
+                if (!parsePositiveInt(si, i) || !parsePositiveInt(sj, j) || !parsePositiveInt(sx, x) || !parsePositiveInt(sy, y)) {
+                    LOG_ERROR("RutaMasCorta", "Los parámetros i, j, x, y deben ser enteros positivos (por ejemplo: 1 2 3 4).");
+                } else {
+                    genoma.RutaMasCorta(descripcion.c_str(), i, j, x, y);
+                }
             }
         }
         // Comando de base_remota
         else if (input.rfind("base_remota", 0) == 0) {
-            if (numParams(input) != 3) { LOG_ERROR("BaseRemota", "El comando 'base_remota' requiere 3 parámetros. Uso: base_remota <descripcion_secuencia> <i> <j>"); } else {
+            if (numParams(input) != 3) {
+                LOG_ERROR("BaseRemota", "El comando 'base_remota' requiere 3 parámetros. Uso: base_remota <descripcion_secuencia> <i> <j>");
+            } else {
                 istringstream iss(input);
                 string cmd, descripcion;
                 string si, sj;
                 iss >> cmd >> descripcion >> si >> sj;
                 int i, j;
-                if (!parsePositiveInt(si, i) || !parsePositiveInt(sj, j)) { LOG_ERROR("BaseRemota", "Los parámetros i y j deben ser enteros positivos (por ejemplo: 1 2)."); } else { genoma.BaseRemota(descripcion.c_str(), i, j); }
+                if (!parsePositiveInt(si, i) || !parsePositiveInt(sj, j)) {
+                    LOG_ERROR("BaseRemota", "Los parámetros i y j deben ser enteros positivos (por ejemplo: 1 2).");
+                } else {
+                    genoma.BaseRemota(descripcion.c_str(), i, j);
+                }
             }
         }
         // Caso por defecto

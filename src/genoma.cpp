@@ -23,7 +23,11 @@ void Genoma::ListarSecuencias() {
     LOG_INFO("ListarSecuencias", string("Total de secuencias: ") + to_string(secuencias.size()));
     for (const Secuencia &secuencia: secuencias) {
         size_t gaps = 0;
-        for (char b: secuencia.bases) if (b == '-') gaps++;
+        for (char b: secuencia.bases) {
+            if (b == '-') {
+                gaps++;
+            }
+        }
         string msg = string("La secuencia '") + secuencia.descripcion + "' " + (gaps > 0 ? "tiene al menos " : "tiene ") + to_string(secuencia.bases.size() - gaps) + " bases.";
         LOG_INFO("ListarSecuencias", msg);
     }
