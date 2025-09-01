@@ -47,51 +47,53 @@ bool Genoma::EsSubsecuencia(const char* subsecuencia){
     // La subsecuencia no existe
     // Varias subsecuencias
 
-    if (secuencias.empty()){
-        cout << "No hay secuencias cargadas en memoria" << endl;
+    if (secuencias.empty()) {
+        cout << termcolor::yellow << "\t[Es Subsecuencia/Advertencia]: No hay secuencias cargadas en memoria" <<
+                termcolor::reset << endl;
         return false;
     }
 
     size_t tam = strlen(subsecuencia);
-	
-    if (tam == 0){
-        cout << "La subsecuencia no existe dentro de las secuencias cargadas en memoria" << endl;
+
+    if (tam == 0) {
+        cout << termcolor::yellow <<
+                "\t[Es Subsecuencia/Advertencia]: La subsecuencia no existe dentro de las secuencias cargadas en memoria"
+                << termcolor::reset << endl;
         return false;
     }
 
     int total = 0;
 
-    for (size_t s = 0; s < secuencias.size(); s++){
-		
-        const vector<char>& scs = secuencias[s].bases;
+    for (size_t s = 0; s < secuencias.size(); s++) {
+        const vector<char> &scs = secuencias[s].bases;
 
-        for (size_t i = 0; i + tam <= scs.size(); i++){
-			
+        for (size_t i = 0; i + tam <= scs.size(); i++) {
             size_t k = 0;
-			
+
             while (k < tam && scs[i + k] == subsecuencia[k]) {
-				k++;
-			}
-			
+                k++;
+            }
+
             if (k == tam) {
                 total++;
             }
-			
         }
     }
 
-    if (total == 0){
-        cout << "La subsecuencia no existe dentro de las secuencias cargadas en memoria" << endl;
+    if (total == 0) {
+        cout << termcolor::yellow <<
+                "\t[Es Subsecuencia/Advertencia]: La subsecuencia no existe dentro de las secuencias cargadas en memoria"
+                << termcolor::reset << endl;
         return false;
     } else {
-        cout << "La subsecuencia dada se repite " << total << " dentro de las secuencias cargadas en memoria" << endl;
+        cout << termcolor::cyan << "\t[Es Subsecuencia]: La subsecuencia dada se repite " << total <<
+                " veces dentro de las secuencias cargadas en memoria" << termcolor::reset << endl;
         return true;
     }
-    
 }
 
 //Enmascarar(subsecuencia) -> void
-void Genoma::Enmascarar(const char* subsecuencia){
+void Genoma::Enmascarar(const char *subsecuencia) {
     // TODO: Implementación de la enmascaración
 
     // Posibles estados:
