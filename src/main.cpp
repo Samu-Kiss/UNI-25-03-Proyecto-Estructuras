@@ -68,7 +68,10 @@ void Decodificar(std::string nombre_archivo) {
 }
 
 // Función para salir del programa
-void Salir() { LOG_EXITO("Sistema", "Saliendo del programa..."); exit(0); }
+void Salir() {
+    LOG_EXITO("Sistema", "Saliendo del programa...");
+    exit(0);
+}
 
 // Funcion para inicializar la consola
 void Inicializar() {
@@ -172,10 +175,17 @@ void LimpiarPantalla() {
 bool Cargar(string nombre_archivo) {
     genoma.secuencias.clear();
     ifstream archivo_entrada(nombre_archivo);
-    if (!archivo_entrada) { LOG_ERROR("Cargar", string("No se pudo abrir el archivo ") + nombre_archivo); return false; }
+    if (!archivo_entrada) {
+        LOG_ERROR("Cargar", string("No se pudo abrir el archivo ") + nombre_archivo);
+        return false;
+    }
 
     // Verificar si el archivo está vacío
-    if (archivo_entrada.peek() == EOF) { LOG_ERROR("Cargar", string("El archivo ") + nombre_archivo + " está vacío."); archivo_entrada.close(); return false; }
+    if (archivo_entrada.peek() == EOF) {
+        LOG_ERROR("Cargar", string("El archivo ") + nombre_archivo + " está vacío.");
+        archivo_entrada.close();
+        return false;
+    }
 
     string linea;
     Secuencia nueva_secuencia;
@@ -247,8 +257,12 @@ bool Cargar(string nombre_archivo) {
     archivo_entrada.close();
 
     // Informar cuántas secuencias se añadieron en esta operación
-    if (countAdded == 0) { LOG_ERROR("Cargar", string("No se cargó ninguna secuencia desde el archivo ") + nombre_archivo); return false; }
-    else { LOG_EXITO("Cargar", string("Se añadieron ") + to_string(countAdded) + " secuencia(s) desde '" + nombre_archivo + "'."); }
+    if (countAdded == 0) {
+        LOG_ERROR("Cargar", string("No se cargó ninguna secuencia desde el archivo ") + nombre_archivo);
+        return false;
+    } else {
+        LOG_EXITO("Cargar", string("Se añadieron ") + to_string(countAdded) + " secuencia(s) desde '" + nombre_archivo + "'.");
+    }
 
     return true;
 }
@@ -265,15 +279,26 @@ int main() {
 
         // Comando de salida
         if (input.rfind("exit", 0) == 0 || input.rfind("quit", 0) == 0 || input.rfind("salir", 0) == 0) {
-            if (numParams(input) != 0) { LOG_ERROR("Salir", "El comando 'salir' no requiere parámetros."); } else { Salir(); }
+            if (numParams(input) != 0) {
+                LOG_ERROR("Salir", "El comando 'salir' no requiere parámetros.");
+            } else {
+                Salir();
+            }
         }
         // Comando de clear
         else if (input.rfind("clear", 0) == 0) {
-            if (numParams(input) != 0) { LOG_ERROR("Clear", "El comando 'clear' no requiere parámetros."); } else { LimpiarPantalla(); }
+            if (numParams(input) != 0) {
+                LOG_ERROR("Clear", "El comando 'clear' no requiere parámetros.");
+            } else {
+                LimpiarPantalla();
+            }
         }
         // Comando de ayuda (con o sin parámetro)
         else if (input.rfind("help", 0) == 0 || input.rfind("ayuda", 0) == 0) {
-            if (numParams(input) > 1) { LOG_ERROR("Help", "El comando 'ayuda' o 'help' acepta como máximo 1 parámetro. Uso: ayuda [comando]"); continue; }
+            if (numParams(input) > 1) {
+                LOG_ERROR("Help", "El comando 'ayuda' o 'help' acepta como máximo 1 parámetro. Uso: ayuda [comando]");
+                continue;
+            }
             // Extraer parámetro si existe, ignorando espacios en blanco extra.
             istringstream iss(input);
             string cmd, param;
@@ -283,41 +308,102 @@ int main() {
         }
         // Comando de cargar
         else if (input.rfind("cargar", 0) == 0) {
-            if (numParams(input) != 1) { LOG_ERROR("Cargar", "El comando 'cargar' requiere 1 parámetro. Uso: cargar <nombre_archivo.fa>"); }
-            else { string nombre_archivo = input.substr(input.find(' ') + 1); if (nombre_archivo.substr(nombre_archivo.find_last_of('.') + 1) != "fa") { LOG_ERROR("Cargar", "El archivo debe tener la extensión .fa"); } else { Cargar(nombre_archivo); } }
+            if (numParams(input) != 1) {
+                LOG_ERROR("Cargar", "El comando 'cargar' requiere 1 parámetro. Uso: cargar <nombre_archivo.fa>");
+            } else {
+                string nombre_archivo = input.substr(input.find(' ') + 1);
+                if (nombre_archivo.substr(nombre_archivo.find_last_of('.') + 1) != "fa") {
+                    LOG_ERROR("Cargar", "El archivo debe tener la extensión .fa");
+                } else {
+                    Cargar(nombre_archivo);
+                }
+            }
         }
         // Comando de guardar
         else if (input.rfind("guardar", 0) == 0) {
-            if (numParams(input) != 1) { LOG_ERROR("Guardar", "El comando 'guardar' requiere 1 parámetro. Uso: guardar <nombre_archivo.fa>"); }
-            else { string nombre_archivo = input.substr(input.find(' ') + 1); if (nombre_archivo.substr(nombre_archivo.find_last_of('.') + 1) != "fa") { LOG_ERROR("Guardar", "El archivo debe tener la extensión .fa"); } else { Guardar(nombre_archivo); } }
+            if (numParams(input) != 1) { LOG_ERROR("Guardar", "El comando 'guardar' requiere 1 parámetro. Uso: guardar <nombre_archivo.fa>"); } else {
+                string nombre_archivo = input.substr(input.find(' ') + 1);
+                if (nombre_archivo.substr(nombre_archivo.find_last_of('.') + 1) != "fa") {
+                    LOG_ERROR("Guardar", "El archivo debe tener la extensión .fa");
+                } else {
+                    Guardar(nombre_archivo);
+                }
+            }
         }
         // Comando de codificar
         else if (input.rfind("codificar", 0) == 0) {
-            if (numParams(input) != 1) { LOG_ERROR("Codificar", "El comando 'codificar' requiere 1 parámetro. Uso: codificar <nombre_archivo.fabin>"); }
-            else { string nombre_archivo = input.substr(input.find(' ') + 1); if (nombre_archivo.substr(nombre_archivo.find_last_of('.') + 1) != "fabin") { LOG_ERROR("Codificar", "El archivo debe tener la extensión .fabin"); } else { Codificar(nombre_archivo); } }
+            if (numParams(input) != 1) {
+                LOG_ERROR("Codificar", "El comando 'codificar' requiere 1 parámetro. Uso: codificar <nombre_archivo.fabin>");
+            } else {
+                string nombre_archivo = input.substr(input.find(' ') + 1);
+                if (nombre_archivo.substr(nombre_archivo.find_last_of('.') + 1) != "fabin") {
+                    LOG_ERROR("Codificar", "El archivo debe tener la extensión .fabin");
+                } else {
+                    Codificar(nombre_archivo);
+                }
+            }
         }
         // Comando de decodificar
         else if (input.rfind("decodificar", 0) == 0) {
-            if (numParams(input) != 1) { LOG_ERROR("Decodificar", "El comando 'decodificar' requiere 1 parámetro. Uso: decodificar <nombre_archivo.fabin>"); }
-            else { string nombre_archivo = input.substr(input.find(' ') + 1); if (nombre_archivo.substr(nombre_archivo.find_last_of('.') + 1) != "fabin") { LOG_ERROR("Decodificar", "El archivo debe tener la extensión .fabin"); } else { Decodificar(nombre_archivo); } }
+            if (numParams(input) != 1) {
+                LOG_ERROR("Decodificar", "El comando 'decodificar' requiere 1 parámetro. Uso: decodificar <nombre_archivo.fabin>");
+            } else {
+                string nombre_archivo = input.substr(input.find(' ') + 1);
+                if (nombre_archivo.substr(nombre_archivo.find_last_of('.') + 1) != "fabin") {
+                    LOG_ERROR("Decodificar", "El archivo debe tener la extensión .fabin");
+                } else {
+                    Decodificar(nombre_archivo);
+                }
+            }
         } else if (input.rfind("listar_secuencias", 0) == 0) {
-            if (numParams(input) != 0) { LOG_ERROR("ListarSecuencias", "El comando 'listar_secuencias' no requiere parámetros. Uso: listar_secuencias"); } else { genoma.ListarSecuencias(); }
+            if (numParams(input) != 0) {
+                LOG_ERROR("ListarSecuencias", "El comando 'listar_secuencias' no requiere parámetros. Uso: listar_secuencias");
+            } else {
+                genoma.ListarSecuencias();
+            }
         } else if (input.rfind("histograma", 0) == 0) {
-            if (numParams(input) != 1) { LOG_ERROR("Histograma", "El comando 'histograma' requiere 1 parámetro. Uso: histograma <descripcion_secuencia>"); } else { string descripcion = input.substr(input.find(' ') + 1); genoma.Histograma(descripcion.c_str()); }
+            if (numParams(input) != 1) {
+                LOG_ERROR("Histograma", "El comando 'histograma' requiere 1 parámetro. Uso: histograma <descripcion_secuencia>");
+            } else {
+                string descripcion = input.substr(input.find(' ') + 1);
+                genoma.Histograma(descripcion.c_str());
+            }
         } else if (input.rfind("es_subsecuencia", 0) == 0) {
-            if (numParams(input) != 1) { LOG_ERROR("EsSubsecuencia", "El comando 'es_subsecuencia' requiere 1 parámetro. Uso: es_subsecuencia <subsecuencia>"); } else { string subsecuencia = input.substr(input.find(' ') + 1); genoma.EsSubsecuencia(subsecuencia.c_str()); }
+            if (numParams(input) != 1) {
+                LOG_ERROR("EsSubsecuencia", "El comando 'es_subsecuencia' requiere 1 parámetro. Uso: es_subsecuencia <subsecuencia>");
+            } else {
+                string subsecuencia = input.substr(input.find(' ') + 1);
+                genoma.EsSubsecuencia(subsecuencia.c_str());
+            }
         } else if (input.rfind("enmascarar", 0) == 0) {
-            if (numParams(input) != 1) { LOG_ERROR("Enmascarar", "El comando 'enmascarar' requiere 1 parámetro. Uso: enmascarar <subsecuencia>"); } else { string subsecuencia = input.substr(input.find(' ') + 1); genoma.Enmascarar(subsecuencia.c_str()); }
+            if (numParams(input) != 1) {
+                LOG_ERROR("Enmascarar", "El comando 'enmascarar' requiere 1 parámetro. Uso: enmascarar <subsecuencia>");
+            } else {
+                string subsecuencia = input.substr(input.find(' ') + 1);
+                genoma.Enmascarar(subsecuencia.c_str());
+            }
         }
         // Comando de ruta_mas_corta
         else if (input.rfind("ruta_mas_corta", 0) == 0) {
-            if (numParams(input) != 5) { LOG_ERROR("RutaMasCorta", "El comando 'ruta_mas_corta' requiere 5 parámetros. Uso: ruta_mas_corta <descripcion_secuencia> <i> <j> <x> <y>"); }
-            else { istringstream iss(input); string cmd, descripcion; string si, sj, sx, sy; iss >> cmd >> descripcion >> si >> sj >> sx >> sy; int i, j, x, y; if (!parsePositiveInt(si, i) || !parsePositiveInt(sj, j) || !parsePositiveInt(sx, x) || !parsePositiveInt(sy, y)) { LOG_ERROR("RutaMasCorta", "Los parámetros i, j, x, y deben ser enteros positivos (por ejemplo: 1 2 3 4)."); } else { genoma.RutaMasCorta(descripcion.c_str(), i, j, x, y); } }
+            if (numParams(input) != 5) { LOG_ERROR("RutaMasCorta", "El comando 'ruta_mas_corta' requiere 5 parámetros. Uso: ruta_mas_corta <descripcion_secuencia> <i> <j> <x> <y>"); } else {
+                istringstream iss(input);
+                string cmd, descripcion;
+                string si, sj, sx, sy;
+                iss >> cmd >> descripcion >> si >> sj >> sx >> sy;
+                int i, j, x, y;
+                if (!parsePositiveInt(si, i) || !parsePositiveInt(sj, j) || !parsePositiveInt(sx, x) || !parsePositiveInt(sy, y)) { LOG_ERROR("RutaMasCorta", "Los parámetros i, j, x, y deben ser enteros positivos (por ejemplo: 1 2 3 4)."); } else { genoma.RutaMasCorta(descripcion.c_str(), i, j, x, y); }
+            }
         }
         // Comando de base_remota
         else if (input.rfind("base_remota", 0) == 0) {
-            if (numParams(input) != 3) { LOG_ERROR("BaseRemota", "El comando 'base_remota' requiere 3 parámetros. Uso: base_remota <descripcion_secuencia> <i> <j>"); }
-            else { istringstream iss(input); string cmd, descripcion; string si, sj; iss >> cmd >> descripcion >> si >> sj; int i, j; if (!parsePositiveInt(si, i) || !parsePositiveInt(sj, j)) { LOG_ERROR("BaseRemota", "Los parámetros i y j deben ser enteros positivos (por ejemplo: 1 2)."); } else { genoma.BaseRemota(descripcion.c_str(), i, j); } }
+            if (numParams(input) != 3) { LOG_ERROR("BaseRemota", "El comando 'base_remota' requiere 3 parámetros. Uso: base_remota <descripcion_secuencia> <i> <j>"); } else {
+                istringstream iss(input);
+                string cmd, descripcion;
+                string si, sj;
+                iss >> cmd >> descripcion >> si >> sj;
+                int i, j;
+                if (!parsePositiveInt(si, i) || !parsePositiveInt(sj, j)) { LOG_ERROR("BaseRemota", "Los parámetros i y j deben ser enteros positivos (por ejemplo: 1 2)."); } else { genoma.BaseRemota(descripcion.c_str(), i, j); }
+            }
         }
         // Caso por defecto
         else {

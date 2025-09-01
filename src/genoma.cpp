@@ -16,11 +16,15 @@ void Genoma::ListarSecuencias() {
     // Posibles estados:
     // No hay secuencias cargadas
     // Resultado exitoso: Hay n secuencias cargadas
-    if (secuencias.empty()) { LOG_ADVERTENCIA("ListarSecuencias", "No hay secuencias cargadas."); return; }
+    if (secuencias.empty()) {
+        LOG_ADVERTENCIA("ListarSecuencias", "No hay secuencias cargadas.");
+        return;
+    }
     LOG_INFO("ListarSecuencias", string("Total de secuencias: ") + to_string(secuencias.size()));
     for (const Secuencia &secuencia: secuencias) {
-        size_t gaps = 0; for (char b: secuencia.bases) if (b == '-') gaps++;
-        string msg = string("La secuencia '") + secuencia.descripcion + "' " + (gaps>0?"tiene al menos ":"tiene ") + to_string(secuencia.bases.size() - gaps) + " bases.";
+        size_t gaps = 0;
+        for (char b: secuencia.bases) if (b == '-') gaps++;
+        string msg = string("La secuencia '") + secuencia.descripcion + "' " + (gaps > 0 ? "tiene al menos " : "tiene ") + to_string(secuencia.bases.size() - gaps) + " bases.";
         LOG_INFO("ListarSecuencias", msg);
     }
 }
@@ -41,7 +45,10 @@ void Genoma::Histograma(const char *descripcion_secuencia) {
         }
     }
 
-    if (tam == secuencias.size()) { LOG_ERROR("Histograma", "Secuencia inválida o inexistente."); return; }
+    if (tam == secuencias.size()) {
+        LOG_ERROR("Histograma", "Secuencia inválida o inexistente.");
+        return;
+    }
 
     const char tabla[18] = {'A', 'C', 'G', 'T', 'U', 'R', 'Y', 'K', 'M', 'S', 'W', 'B', 'D', 'H', 'V', 'N', 'X', '-'};
     int frec[18];
@@ -77,11 +84,17 @@ bool Genoma::EsSubsecuencia(const char *subsecuencia) {
     // La subsecuencia no existe
     // Varias subsecuencias
 
-    if (secuencias.empty()) { LOG_ADVERTENCIA("EsSubsecuencia", "No hay secuencias cargadas en memoria."); return false; }
+    if (secuencias.empty()) {
+        LOG_ADVERTENCIA("EsSubsecuencia", "No hay secuencias cargadas en memoria.");
+        return false;
+    }
 
     size_t tam = strlen(subsecuencia);
 
-    if (tam == 0) { LOG_ADVERTENCIA("EsSubsecuencia", "La subsecuencia está vacía."); return false; }
+    if (tam == 0) {
+        LOG_ADVERTENCIA("EsSubsecuencia", "La subsecuencia está vacía.");
+        return false;
+    }
 
     int total = 0;
 
@@ -101,7 +114,10 @@ bool Genoma::EsSubsecuencia(const char *subsecuencia) {
         }
     }
 
-    if (total == 0) { LOG_ADVERTENCIA("EsSubsecuencia", "La subsecuencia no existe dentro de las secuencias cargadas en memoria."); return false; }
+    if (total == 0) {
+        LOG_ADVERTENCIA("EsSubsecuencia", "La subsecuencia no existe dentro de las secuencias cargadas en memoria.");
+        return false;
+    }
     LOG_EXITO("EsSubsecuencia", string("La subsecuencia dada se repite ") + to_string(total) + " veces dentro de las secuencias cargadas en memoria.");
     return true;
 }
@@ -109,8 +125,14 @@ bool Genoma::EsSubsecuencia(const char *subsecuencia) {
 //Enmascarar(subsecuencia) -> void
 void Genoma::Enmascarar(const char *subsecuencia) {
     // Validaciones básicas
-    if (secuencias.empty()) { LOG_ADVERTENCIA("Enmascarar", "No hay secuencias cargadas."); return; }
-    if (subsecuencia == nullptr || subsecuencia[0] == '\0') { LOG_ADVERTENCIA("Enmascarar", "Subsecuencia vacía o inválida."); return; }
+    if (secuencias.empty()) {
+        LOG_ADVERTENCIA("Enmascarar", "No hay secuencias cargadas.");
+        return;
+    }
+    if (subsecuencia == nullptr || subsecuencia[0] == '\0') {
+        LOG_ADVERTENCIA("Enmascarar", "Subsecuencia vacía o inválida.");
+        return;
+    }
 
     size_t largoSub = strlen(subsecuencia);
 
@@ -123,10 +145,9 @@ void Genoma::Enmascarar(const char *subsecuencia) {
         long enmascaradasEnSecuencia = 0;
         // Búsqueda lineal no solapada; avance por largoSub si matchea, sino 1
         for (size_t i = 0; i + largoSub <= secuencia.bases.size();) {
-            bool coincide = true;
             // Use std::equal for faster/more optimized comparison of the range.
             // (Requires #include <algorithm> in the file.)
-            coincide = equal(secuencia.bases.begin() + i, secuencia.bases.begin() + i + largoSub, subsecuencia);
+            bool coincide = equal(secuencia.bases.begin() + i, secuencia.bases.begin() + i + largoSub, subsecuencia);
             if (coincide) {
                 // Enmascarar
                 for (size_t k = 0; k < largoSub; ++k) {
@@ -146,8 +167,11 @@ void Genoma::Enmascarar(const char *subsecuencia) {
         }
     }
 
-    if (totalEnmascaradas == 0) { LOG_ADVERTENCIA("Enmascarar", string("No se encontraron coincidencias de '") + subsecuencia + "'."); }
-    else { LOG_EXITO("Enmascarar", string("Se enmascaró la subsecuencia '") + subsecuencia + "' " + to_string(totalEnmascaradas) + (totalEnmascaradas==1?" vez":" veces") + " en total (" + to_string(totalBasesEnmascaradas) + " bases reemplazadas)."); }
+    if (totalEnmascaradas == 0) {
+        LOG_ADVERTENCIA("Enmascarar", string("No se encontraron coincidencias de '") + subsecuencia + "'.");
+    } else {
+        LOG_EXITO("Enmascarar", string("Se enmascaró la subsecuencia '") + subsecuencia + "' " + to_string(totalEnmascaradas) + (totalEnmascaradas==1?" vez":" veces") + " en total (" + to_string(totalBasesEnmascaradas) + " bases reemplazadas).");
+    }
 }
 
 //RutaMasCorta(descripcion_secuencia, i, j, x, y) -> void

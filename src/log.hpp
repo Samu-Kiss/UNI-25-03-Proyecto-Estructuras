@@ -14,7 +14,7 @@
 
 enum class LogEstado { Exito, Info, Advertencia, Error };
 
-inline const char* LogEstadoTexto(LogEstado e) {
+inline const char *LogEstadoTexto(LogEstado e) {
     switch (e) {
         case LogEstado::Exito: return "Exito";
         case LogEstado::Info: return "Info";
@@ -24,7 +24,7 @@ inline const char* LogEstadoTexto(LogEstado e) {
     return "Info";
 }
 
-inline std::ostream& LogStream(LogEstado e) {
+inline std::ostream &LogStream(LogEstado e) {
     if (e == LogEstado::Error || e == LogEstado::Advertencia) return std::cerr;
     return std::cout;
 }
@@ -33,10 +33,14 @@ inline void Log(const std::string &modulo, LogEstado estado, const std::string &
     using namespace termcolor;
     std::ostream &os = LogStream(estado);
     switch (estado) {
-        case LogEstado::Exito:       os << green; break;
-        case LogEstado::Info:        os << blue; break;
-        case LogEstado::Advertencia: os << yellow; break;
-        case LogEstado::Error:       os << red; break;
+        case LogEstado::Exito: os << green;
+            break;
+        case LogEstado::Info: os << blue;
+            break;
+        case LogEstado::Advertencia: os << yellow;
+            break;
+        case LogEstado::Error: os << red;
+            break;
     }
     os << "\t[" << modulo << "/" << LogEstadoTexto(estado) << "]: " << reset << mensaje << std::endl;
 }
