@@ -13,8 +13,6 @@ using namespace std;
 
 Genoma genoma;
 
-// (Helper de logs centralizado en log.hpp)
-
 // Devuelve cuántos parámetros reales hay después del comando.
 // Ej: "cargar archivo" -> 1
 int numParams(const string &input) {

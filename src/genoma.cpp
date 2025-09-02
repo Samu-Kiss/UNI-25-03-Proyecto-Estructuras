@@ -11,8 +11,6 @@ using namespace std;
 
 //ListarSecuencias() -> void
 void Genoma::ListarSecuencias() {
-    // TODO: Implementación de la lista de secuencias
-
     // Posibles estados:
     // No hay secuencias cargadas
     // Resultado exitoso: Hay n secuencias cargadas
@@ -35,8 +33,6 @@ void Genoma::ListarSecuencias() {
 
 //Histograma(descripcion_secuencia) -> void
 void Genoma::Histograma(const char *descripcion_secuencia) {
-    // TODO: Implementación del histograma
-
     // Posibles estados:
     // la secuencia no existe: secuencia inválida
     // la secuencia existe A: frecuencia a \n C: frecuencia c \n G: frecuencia g \n T: frecuencia t \n -: frecuencia -
@@ -81,8 +77,6 @@ void Genoma::Histograma(const char *descripcion_secuencia) {
 
 //EsSubsecuencia(subsecuencia) -> booleano
 bool Genoma::EsSubsecuencia(const char *subsecuencia) {
-    // TODO: Implementación de la verificación de subsecuencia
-
     // Posibles estados:
     // No hay secuencias cargadas
     // La subsecuencia no existe
