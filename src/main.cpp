@@ -47,8 +47,6 @@ bool parsePositiveInt(const string &s, int &out) {
 
 // Función para guardar un archivo
 void Guardar(const string &nombre_archivo) {
-    // TODO: Lógica para guardar el archivo
-
     // Posibles estados:
     // No hay secuencias cargadas
     // Archivo guardado exitosamente
@@ -70,10 +68,9 @@ void Guardar(const string &nombre_archivo) {
         archivo << ">" << secuencia.descripcion << endl;
 
         vector<char>::const_iterator it = secuencia.bases.begin();
-        for (int i = 0; it != secuencia.bases.end(); i++) {
+        for (size_t i = 0; i < secuencia.bases.size(); ++i) {
             if (i % secuencia.ancho_linea == 0 && i != 0) archivo << endl;
-            archivo << *it;
-            it++;
+            archivo << secuencia.bases[i];
         }
 
         archivo << endl;
