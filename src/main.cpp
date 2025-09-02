@@ -47,12 +47,37 @@ bool parsePositiveInt(const string &s, int &out) {
 
 // Función para guardar un archivo
 void Guardar(const string &nombre_archivo) {
-    // TODO: Lógica para guardar el archivo
-
     // Posibles estados:
     // No hay secuencias cargadas
     // Archivo guardado exitosamente
     // Error al guardar el archivo
+    if (genoma.secuencias.empty()) {
+        LOG_ADVERTENCIA("Guardar", "No hay secuencias cargadas.");
+        return;
+    }
+
+    // Intentar abrir el archivo
+    ofstream archivo(nombre_archivo);
+    if (!archivo.is_open()) {
+        LOG_ERROR("Guardar", "No se pudo abrir el archivo para guardar.");
+        return;
+    }
+
+    // Guardar las secuencias en el archivo
+    for (const Secuencia& secuencia : genoma.secuencias) {
+        archivo << ">" << secuencia.descripcion << endl;
+
+        vector<char>::const_iterator it = secuencia.bases.begin();
+        for (size_t i = 0; i < secuencia.bases.size(); ++i) {
+            if (i % secuencia.ancho_linea == 0 && i != 0) archivo << endl;
+            archivo << secuencia.bases[i];
+        }
+
+        archivo << endl;
+    }
+
+    archivo.close();
+    LOG_EXITO("Guardar", "Archivo guardado exitosamente.");
 }
 
 // Función para codificar un archivo
