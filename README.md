@@ -18,11 +18,10 @@ Este proyecto implementa una consola interactiva para el análisis de secuencias
 ├── src/
 │   ├── main.cpp               # Punto de entrada del programa
 │   ├── genoma.cpp             # Implementación de la lógica de genomas
-│   └── secuencia.cpp          # Operaciones sobre secuencias
-├── include/
+│   ├── secuencia.cpp          # Operaciones sobre secuencias
 │   ├── genoma.h               # Declaraciones relacionadas a genomas
-│   └── secuencia.h            # Declaraciones de secuencias
-├── external/
+│   ├── secuencia.h            # Declaraciones de secuencias
+│   ├── log.hpp                # Utilidad para uniformidad en los logs
 │   └── termcolor.hpp          # Librería para colores en terminal
 ├── archivosFASTA/             # Archivos de ejemplo en formato FASTA
 └── CMakeLists.txt             # Configuración de CMake
