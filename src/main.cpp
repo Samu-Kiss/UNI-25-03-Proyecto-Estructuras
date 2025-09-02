@@ -1,6 +1,7 @@
-#include "./termcolor.hpp" // Librería para colores en la consola
+﻿#include "./termcolor.hpp" // Librería para colores en la consola
 #include "./secuencia.h"
 #include "./genoma.h"
+#include "./log.hpp"
 #include <iostream>
 #include <string>
 #include <climits>
@@ -11,6 +12,8 @@
 using namespace std;
 
 Genoma genoma;
+
+// (Helper de logs centralizado en log.hpp)
 
 // Devuelve cuántos parámetros reales hay después del comando.
 // Ej: "cargar archivo" -> 1
@@ -43,7 +46,7 @@ bool parsePositiveInt(const string &s, int &out) {
 }
 
 // Función para guardar un archivo
-void Guardar(string nombre_archivo) {
+void Guardar(const string &nombre_archivo) {
     // TODO: Lógica para guardar el archivo
 
     // Posibles estados:
@@ -53,20 +56,20 @@ void Guardar(string nombre_archivo) {
 }
 
 // Función para codificar un archivo
-void Codificar(std::string nombre_archivo) {
+void Codificar(const string &nombre_archivo) {
     //TODO: Implementación de la codificación
     //ESTO SE HACE EN LA SEGUNDA ENTREGA
 }
 
 // Función para decodificar un archivo
-void Decodificar(std::string nombre_archivo) {
+void Decodificar(const string &nombre_archivo) {
     //TODO: Implementación de la decodificación
     //ESTO SE HACE EN LA SEGUNDA ENTREGA
 }
 
 // Función para salir del programa
 void Salir() {
-    cout << termcolor::green << "\t[Sistema]: Saliendo del programa..." << termcolor::reset << endl;
+    LOG_EXITO("Sistema", "Saliendo del programa...");
     exit(0);
 }
 
@@ -169,17 +172,17 @@ void LimpiarPantalla() {
 }
 
 // Función para cargar un archivo
-bool Cargar(string nombre_archivo) {
+bool Cargar(const string &nombre_archivo) {
     genoma.secuencias.clear();
     ifstream archivo_entrada(nombre_archivo);
     if (!archivo_entrada) {
-        cerr << termcolor::red << "\t[Cargar/Error]: No se pudo abrir el archivo " << nombre_archivo << termcolor::reset << endl;
+        LOG_ERROR("Cargar", string("No se pudo abrir el archivo ") + nombre_archivo);
         return false;
     }
 
     // Verificar si el archivo está vacío
     if (archivo_entrada.peek() == EOF) {
-        cerr << termcolor::red << "\t[Cargar/Error]: El archivo " << nombre_archivo << " está vacío." << termcolor::reset << endl;
+        LOG_ERROR("Cargar", string("El archivo ") + nombre_archivo + " está vacío.");
         archivo_entrada.close();
         return false;
     }
@@ -194,24 +197,18 @@ bool Cargar(string nombre_archivo) {
             // Línea vacía actúa como separador entre secuencias.
             if (!nueva_secuencia.descripcion.empty() || !nueva_secuencia.bases.empty()) {
                 if (nueva_secuencia.descripcion.empty() && !nueva_secuencia.bases.empty()) {
-                    // Bases sin descripción: descartar y advertir.
-                    cerr << termcolor::yellow << "\t[Cargar/Advertencia]: Se encontró una secuencia sin descripción en el archivo "
-                            << nombre_archivo << ". Se descarta la secuencia." << termcolor::reset << endl;
+                    LOG_ADVERTENCIA("Cargar", string("Se encontró una secuencia sin descripción en el archivo ") + nombre_archivo + ". Se descarta la secuencia.");
                 } else if (!nueva_secuencia.descripcion.empty() && nueva_secuencia.bases.empty()) {
-                    // Descripción sin bases: descartar y advertir (requisito solicitado).
-                    cerr << termcolor::yellow << "\t[Cargar/Advertencia]: La secuencia '" << nueva_secuencia.descripcion
-                            << "' no contiene bases. Se descarta la secuencia." << termcolor::reset << endl;
+                    LOG_ADVERTENCIA("Cargar", string("La secuencia '") + nueva_secuencia.descripcion + "' no contiene bases. Se descarta la secuencia.");
                 } else {
-                    // Secuencia completa -> añadir.
                     genoma.secuencias.push_back(nueva_secuencia);
                     ++countAdded;
-                    cout << termcolor::green << "\t[Cargar]: Secuencia añadida: " << nueva_secuencia.descripcion << termcolor::reset << endl;
+                    LOG_EXITO("Cargar", string("Secuencia añadida: ") + nueva_secuencia.descripcion);
                 }
                 nueva_secuencia = Secuencia();
                 firstLine = false;
             } else {
-                // Línea vacía aislada
-                cerr << termcolor::yellow << "\t[Cargar/Advertencia]: Línea vacía en el archivo " << nombre_archivo << termcolor::reset << endl;
+                LOG_ADVERTENCIA("Cargar", string("Línea vacía en el archivo ") + nombre_archivo);
             }
             continue;
         }
@@ -221,13 +218,13 @@ bool Cargar(string nombre_archivo) {
             // Si había una secuencia en construcción, procesarla antes de comenzar la nueva
             if (!nueva_secuencia.descripcion.empty() || !nueva_secuencia.bases.empty()) {
                 if (nueva_secuencia.descripcion.empty() && !nueva_secuencia.bases.empty()) {
-                    cerr << termcolor::yellow << "\t[Cargar/Advertencia]: Se encontró una secuencia sin descripción en el archivo " << nombre_archivo << ". Se descarta la secuencia." << termcolor::reset << endl;
+                    LOG_ADVERTENCIA("Cargar", string("Se encontró una secuencia sin descripción en el archivo ") + nombre_archivo + ". Se descarta la secuencia.");
                 } else if (!nueva_secuencia.descripcion.empty() && nueva_secuencia.bases.empty()) {
-                    cerr << termcolor::yellow << "\t[Cargar/Advertencia]: La secuencia '" << nueva_secuencia.descripcion << "' no contiene bases. Se descarta la secuencia." << termcolor::reset << endl;
+                    LOG_ADVERTENCIA("Cargar", string("La secuencia '") + nueva_secuencia.descripcion + "' no contiene bases. Se descarta la secuencia.");
                 } else {
                     genoma.secuencias.push_back(nueva_secuencia);
                     ++countAdded;
-                    cout << termcolor::green << "\t[Cargar]: Secuencia añadida: " << nueva_secuencia.descripcion << termcolor::reset << endl;
+                    LOG_EXITO("Cargar", string("Secuencia añadida: ") + nueva_secuencia.descripcion);
                 }
             }
             nueva_secuencia = Secuencia();
@@ -247,13 +244,13 @@ bool Cargar(string nombre_archivo) {
     // Agregar la última secuencia si existe y es válida
     if (!nueva_secuencia.descripcion.empty() || !nueva_secuencia.bases.empty()) {
         if (nueva_secuencia.descripcion.empty() && !nueva_secuencia.bases.empty()) {
-            cerr << termcolor::yellow << "\t[Cargar/Advertencia]: Se encontró una secuencia sin descripción en el archivo " << nombre_archivo << ". Se descarta la secuencia." << termcolor::reset << endl;
+            LOG_ADVERTENCIA("Cargar", string("Se encontró una secuencia sin descripción en el archivo ") + nombre_archivo + ". Se descarta la secuencia.");
         } else if (!nueva_secuencia.descripcion.empty() && nueva_secuencia.bases.empty()) {
-            cerr << termcolor::yellow << "\t[Cargar/Advertencia]: La secuencia '" << nueva_secuencia.descripcion << "' no contiene bases. Se descarta la secuencia." << termcolor::reset << endl;
+            LOG_ADVERTENCIA("Cargar", string("La secuencia '") + nueva_secuencia.descripcion + "' no contiene bases. Se descarta la secuencia.");
         } else {
             genoma.secuencias.push_back(nueva_secuencia);
             ++countAdded;
-            cout << termcolor::green << "\t[Cargar]: Secuencia añadida: " << nueva_secuencia.descripcion << termcolor::reset << endl;
+            LOG_EXITO("Cargar", string("Secuencia añadida: ") + nueva_secuencia.descripcion);
         }
     }
 
@@ -261,10 +258,10 @@ bool Cargar(string nombre_archivo) {
 
     // Informar cuántas secuencias se añadieron en esta operación
     if (countAdded == 0) {
-        cerr << termcolor::red << "\t[Cargar/Error]: No se cargó ninguna secuencia desde el archivo " << nombre_archivo << termcolor::reset << endl;
+        LOG_ERROR("Cargar", string("No se cargó ninguna secuencia desde el archivo ") + nombre_archivo);
         return false;
     } else {
-        cout << termcolor::green << "\t[Cargar]: Se añadieron " << countAdded << " secuencia(s) desde '" << nombre_archivo << "'." << termcolor::reset << endl;
+        LOG_EXITO("Cargar", string("Se añadieron ") + to_string(countAdded) + " secuencia(s) desde '" + nombre_archivo + "'.");
     }
 
     return true;
@@ -283,7 +280,7 @@ int main() {
         // Comando de salida
         if (input.rfind("exit", 0) == 0 || input.rfind("quit", 0) == 0 || input.rfind("salir", 0) == 0) {
             if (numParams(input) != 0) {
-                cout << termcolor::red << "\t[Salir/Error]: El comando 'salir' no requiere parámetros." << termcolor::reset << endl;
+                LOG_ERROR("Salir", "El comando 'salir' no requiere parámetros.");
             } else {
                 Salir();
             }
@@ -291,7 +288,7 @@ int main() {
         // Comando de clear
         else if (input.rfind("clear", 0) == 0) {
             if (numParams(input) != 0) {
-                cout << termcolor::red << "\t[Clear/Error]: El comando 'clear' no requiere parámetros." << termcolor::reset << endl;
+                LOG_ERROR("Clear", "El comando 'clear' no requiere parámetros.");
             } else {
                 LimpiarPantalla();
             }
@@ -299,7 +296,7 @@ int main() {
         // Comando de ayuda (con o sin parámetro)
         else if (input.rfind("help", 0) == 0 || input.rfind("ayuda", 0) == 0) {
             if (numParams(input) > 1) {
-                cout << termcolor::red << "\t[Help/Error]: El comando 'ayuda' o 'help' acepta como máximo 1 parámetro. Uso: ayuda [comando]" << termcolor::reset << endl;
+                LOG_ERROR("Help", "El comando 'ayuda' o 'help' acepta como máximo 1 parámetro. Uso: ayuda [comando]");
                 continue;
             }
             // Extraer parámetro si existe, ignorando espacios en blanco extra.
@@ -312,12 +309,11 @@ int main() {
         // Comando de cargar
         else if (input.rfind("cargar", 0) == 0) {
             if (numParams(input) != 1) {
-                cout << termcolor::red << "\t[Cargar/Error]: El comando 'cargar' requiere 1 parámetro. Uso: cargar <nombre_archivo.fa>" << termcolor::reset << endl;
+                LOG_ERROR("Cargar", "El comando 'cargar' requiere 1 parámetro. Uso: cargar <nombre_archivo.fa>");
             } else {
-                //Verificar si el archivo tiene la extensión .fa
                 string nombre_archivo = input.substr(input.find(' ') + 1);
                 if (nombre_archivo.substr(nombre_archivo.find_last_of('.') + 1) != "fa") {
-                    cout << termcolor::red << "\t[Cargar/Error]: El archivo debe tener la extensión .fa" << termcolor::reset << endl;
+                    LOG_ERROR("Cargar", "El archivo debe tener la extensión .fa");
                 } else {
                     Cargar(nombre_archivo);
                 }
@@ -325,14 +321,12 @@ int main() {
         }
         // Comando de guardar
         else if (input.rfind("guardar", 0) == 0) {
-            if (numParams(input) != 1) {
-                cout << termcolor::red << "\t[Guardar/Error]: El comando 'guardar' requiere 1 parámetro. Uso: guardar <nombre_archivo.fa>" << termcolor::reset << endl;
+            if (numParams(input) != 1) { 
+                LOG_ERROR("Guardar", "El comando 'guardar' requiere 1 parámetro. Uso: guardar <nombre_archivo.fa>"); 
             } else {
-                //Verificar si el archivo tiene la extensión .fa
-
                 string nombre_archivo = input.substr(input.find(' ') + 1);
                 if (nombre_archivo.substr(nombre_archivo.find_last_of('.') + 1) != "fa") {
-                    cout << termcolor::red << "\t[Guardar/Error]: El archivo debe tener la extensión .fa" << termcolor::reset << endl;
+                    LOG_ERROR("Guardar", "El archivo debe tener la extensión .fa");
                 } else {
                     Guardar(nombre_archivo);
                 }
@@ -341,12 +335,11 @@ int main() {
         // Comando de codificar
         else if (input.rfind("codificar", 0) == 0) {
             if (numParams(input) != 1) {
-                cout << termcolor::red << "\t[Codificar/Error]: El comando 'codificar' requiere 1 parámetro. Uso: codificar <nombre_archivo.fabin>" << termcolor::reset << endl;
+                LOG_ERROR("Codificar", "El comando 'codificar' requiere 1 parámetro. Uso: codificar <nombre_archivo.fabin>");
             } else {
-                //Verificar si el archivo tiene la extensión .fabin
                 string nombre_archivo = input.substr(input.find(' ') + 1);
                 if (nombre_archivo.substr(nombre_archivo.find_last_of('.') + 1) != "fabin") {
-                    cout << termcolor::red << "\t[Codificar/Error]: El archivo debe tener la extensión .fabin" << termcolor::reset << endl;
+                    LOG_ERROR("Codificar", "El archivo debe tener la extensión .fabin");
                 } else {
                     Codificar(nombre_archivo);
                 }
@@ -355,39 +348,38 @@ int main() {
         // Comando de decodificar
         else if (input.rfind("decodificar", 0) == 0) {
             if (numParams(input) != 1) {
-                cout << termcolor::red << "\t[Decodificar/Error]: El comando 'decodificar' requiere 1 parámetro. Uso: decodificar <nombre_archivo.fabin>" << termcolor::reset << endl;
+                LOG_ERROR("Decodificar", "El comando 'decodificar' requiere 1 parámetro. Uso: decodificar <nombre_archivo.fabin>");
             } else {
-                //Verificar si el archivo tiene la extensión .fabin
                 string nombre_archivo = input.substr(input.find(' ') + 1);
                 if (nombre_archivo.substr(nombre_archivo.find_last_of('.') + 1) != "fabin") {
-                    cout << termcolor::red << "\t[Decodificar/Error]: El archivo debe tener la extensión .fabin" << termcolor::reset << endl;
+                    LOG_ERROR("Decodificar", "El archivo debe tener la extensión .fabin");
                 } else {
                     Decodificar(nombre_archivo);
                 }
             }
         } else if (input.rfind("listar_secuencias", 0) == 0) {
             if (numParams(input) != 0) {
-                cout << termcolor::red << "\t[Listar Secuencias/Error]: El comando 'listar_secuencias' no requiere parámetros. Uso: listar_secuencias" << termcolor::reset << endl;
+                LOG_ERROR("ListarSecuencias", "El comando 'listar_secuencias' no requiere parámetros. Uso: listar_secuencias");
             } else {
                 genoma.ListarSecuencias();
             }
         } else if (input.rfind("histograma", 0) == 0) {
             if (numParams(input) != 1) {
-                cout << termcolor::red << "\t[Histograma/Error]: El comando 'histograma' requiere 1 parámetro. Uso: histograma <descripcion_secuencia>" << termcolor::reset << endl;
+                LOG_ERROR("Histograma", "El comando 'histograma' requiere 1 parámetro. Uso: histograma <descripcion_secuencia>");
             } else {
                 string descripcion = input.substr(input.find(' ') + 1);
                 genoma.Histograma(descripcion.c_str());
             }
         } else if (input.rfind("es_subsecuencia", 0) == 0) {
             if (numParams(input) != 1) {
-                cout << termcolor::red << "\t[Es Subsecuencia/Error]: El comando 'es_subsecuencia' requiere 1 parámetro. Uso: es_subsecuencia <subsecuencia>" << termcolor::reset << endl;
+                LOG_ERROR("EsSubsecuencia", "El comando 'es_subsecuencia' requiere 1 parámetro. Uso: es_subsecuencia <subsecuencia>");
             } else {
                 string subsecuencia = input.substr(input.find(' ') + 1);
                 genoma.EsSubsecuencia(subsecuencia.c_str());
             }
         } else if (input.rfind("enmascarar", 0) == 0) {
             if (numParams(input) != 1) {
-                cout << termcolor::red << "\t[Enmascarar/Error]: El comando 'enmascarar' requiere 1 parámetro. Uso: enmascarar <subsecuencia>" << termcolor::reset << endl;
+                LOG_ERROR("Enmascarar", "El comando 'enmascarar' requiere 1 parámetro. Uso: enmascarar <subsecuencia>");
             } else {
                 string subsecuencia = input.substr(input.find(' ') + 1);
                 genoma.Enmascarar(subsecuencia.c_str());
@@ -396,7 +388,7 @@ int main() {
         // Comando de ruta_mas_corta
         else if (input.rfind("ruta_mas_corta", 0) == 0) {
             if (numParams(input) != 5) {
-                cout << termcolor::red << "\t[Ruta Más Corta/Error]: El comando 'ruta_mas_corta' requiere 5 parámetros. Uso: ruta_mas_corta <descripcion_secuencia> <i> <j> <x> <y>" << termcolor::reset << endl;
+                LOG_ERROR("RutaMasCorta", "El comando 'ruta_mas_corta' requiere 5 parámetros. Uso: ruta_mas_corta <descripcion_secuencia> <i> <j> <x> <y>");
             } else {
                 istringstream iss(input);
                 string cmd, descripcion;
@@ -404,7 +396,7 @@ int main() {
                 iss >> cmd >> descripcion >> si >> sj >> sx >> sy;
                 int i, j, x, y;
                 if (!parsePositiveInt(si, i) || !parsePositiveInt(sj, j) || !parsePositiveInt(sx, x) || !parsePositiveInt(sy, y)) {
-                    cout << termcolor::red << "\t[Ruta Más Corta/Error]: Los parámetros i, j, x, y deben ser enteros positivos (por ejemplo: 1 2 3 4)." << termcolor::reset << endl;
+                    LOG_ERROR("RutaMasCorta", "Los parámetros i, j, x, y deben ser enteros positivos (por ejemplo: 1 2 3 4).");
                 } else {
                     genoma.RutaMasCorta(descripcion.c_str(), i, j, x, y);
                 }
@@ -413,7 +405,7 @@ int main() {
         // Comando de base_remota
         else if (input.rfind("base_remota", 0) == 0) {
             if (numParams(input) != 3) {
-                cout << termcolor::red << "\t[Base Remota/Error]: El comando 'base_remota' requiere 3 parámetros. Uso: base_remota <descripcion_secuencia> <i> <j>" << termcolor::reset << endl;
+                LOG_ERROR("BaseRemota", "El comando 'base_remota' requiere 3 parámetros. Uso: base_remota <descripcion_secuencia> <i> <j>");
             } else {
                 istringstream iss(input);
                 string cmd, descripcion;
@@ -421,7 +413,7 @@ int main() {
                 iss >> cmd >> descripcion >> si >> sj;
                 int i, j;
                 if (!parsePositiveInt(si, i) || !parsePositiveInt(sj, j)) {
-                    cout << termcolor::red << "\t[Base Remota/Error]: Los parámetros i y j deben ser enteros positivos (por ejemplo: 1 2)." << termcolor::reset << endl;
+                    LOG_ERROR("BaseRemota", "Los parámetros i y j deben ser enteros positivos (por ejemplo: 1 2).");
                 } else {
                     genoma.BaseRemota(descripcion.c_str(), i, j);
                 }
@@ -429,7 +421,7 @@ int main() {
         }
         // Caso por defecto
         else {
-            cout << termcolor::red << "\t[Sistema/Error]: Comando no reconocido: '" << input << "'" << termcolor::reset << endl;
+            LOG_ERROR("Sistema", string("Comando no reconocido: '") + input + "'");
         }
     }
     return 0;

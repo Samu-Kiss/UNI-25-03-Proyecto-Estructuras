@@ -1,6 +1,7 @@
 #include "./termcolor.hpp"
 #include "./secuencia.h"
 #include "./genoma.h"
+#include "./log.hpp"
 #include <iostream>
 #include <vector>
 #include <string>
@@ -16,15 +17,19 @@ void Genoma::ListarSecuencias() {
     // No hay secuencias cargadas
     // Resultado exitoso: Hay n secuencias cargadas
     if (secuencias.empty()) {
-        cout << termcolor::yellow << "\t[Listar Secuencias/Advertencia]: No hay secuencias cargadas." << termcolor::reset << endl;
-    } else {
-        for (const Secuencia &secuencia: secuencias) {
-            int cont = 0;
-            for (const char &base: secuencia.bases) {
-                if (base == '-') { cont++; }
+        LOG_ADVERTENCIA("ListarSecuencias", "No hay secuencias cargadas.");
+        return;
+    }
+    LOG_INFO("ListarSecuencias", string("Total de secuencias: ") + to_string(secuencias.size()));
+    for (const Secuencia &secuencia: secuencias) {
+        size_t gaps = 0;
+        for (char b: secuencia.bases) {
+            if (b == '-') {
+                gaps++;
             }
-            cout << termcolor::cyan << "\t[Listar Secuencias]: La secuencia '" << secuencia.descripcion << "'" << (cont > 0 ? " tiene al menos " : " tiene ") << secuencia.bases.size() - cont << " bases." << termcolor::reset << endl;
         }
+        string msg = string("La secuencia '") + secuencia.descripcion + "' " + (gaps > 0 ? "tiene al menos " : "tiene ") + to_string(secuencia.bases.size() - gaps) + " bases.";
+        LOG_INFO("ListarSecuencias", msg);
     }
 }
 
@@ -45,9 +50,8 @@ void Genoma::Histograma(const char *descripcion_secuencia) {
     }
 
     if (tam == secuencias.size()) {
-        //No entro al if, no encontro la secuencia
-        cout << termcolor::red << "\t[Histograma/Error]: Secuencia inválida o inexistente." << termcolor::reset << endl;
-        return; //Se sale
+        LOG_ERROR("Histograma", "Secuencia inválida o inexistente.");
+        return;
     }
 
     const char tabla[18] = {'A', 'C', 'G', 'T', 'U', 'R', 'Y', 'K', 'M', 'S', 'W', 'B', 'D', 'H', 'V', 'N', 'X', '-'};
@@ -69,8 +73,9 @@ void Genoma::Histograma(const char *descripcion_secuencia) {
         }
     }
 
+    LOG_INFO("Histograma", string("Frecuencias de '") + secuencias[tam].descripcion + "':");
     for (int i = 0; i < 18; ++i) {
-        cout << termcolor::cyan << "\t[Histograma/" << secuencias[tam].descripcion << "]: " << tabla[i] << termcolor::reset << " -> " << frec[i] << endl;
+        Log("Histograma", LogEstado::Info, string(1, tabla[i]) + " -> " + to_string(frec[i]));
     }
 }
 
@@ -84,14 +89,14 @@ bool Genoma::EsSubsecuencia(const char *subsecuencia) {
     // Varias subsecuencias
 
     if (secuencias.empty()) {
-        cout << termcolor::yellow << "\t[Es Subsecuencia/Advertencia]: No hay secuencias cargadas en memoria." << termcolor::reset << endl;
+        LOG_ADVERTENCIA("EsSubsecuencia", "No hay secuencias cargadas en memoria.");
         return false;
     }
 
     size_t tam = strlen(subsecuencia);
 
     if (tam == 0) {
-        cout << termcolor::yellow << "\t[Es Subsecuencia/Advertencia]: La subsecuencia no existe dentro de las secuencias cargadas en memoria." << termcolor::reset << endl;
+        LOG_ADVERTENCIA("EsSubsecuencia", "La subsecuencia está vacía.");
         return false;
     }
 
@@ -114,23 +119,22 @@ bool Genoma::EsSubsecuencia(const char *subsecuencia) {
     }
 
     if (total == 0) {
-        cout << termcolor::yellow << "\t[Es Subsecuencia/Advertencia]: La subsecuencia no existe dentro de las secuencias cargadas en memoria." << termcolor::reset << endl;
+        LOG_ADVERTENCIA("EsSubsecuencia", "La subsecuencia no existe dentro de las secuencias cargadas en memoria.");
         return false;
-    } else {
-        cout << termcolor::cyan << "\t[Es Subsecuencia]: La subsecuencia dada se repite " << total << " veces dentro de las secuencias cargadas en memoria." << termcolor::reset << endl;
-        return true;
     }
+    LOG_EXITO("EsSubsecuencia", string("La subsecuencia dada se repite ") + to_string(total) + " veces dentro de las secuencias cargadas en memoria.");
+    return true;
 }
 
 //Enmascarar(subsecuencia) -> void
 void Genoma::Enmascarar(const char *subsecuencia) {
     // Validaciones básicas
     if (secuencias.empty()) {
-        cout << termcolor::yellow << "\t[Enmascarar/Advertencia]: No hay secuencias cargadas." << termcolor::reset << endl;
+        LOG_ADVERTENCIA("Enmascarar", "No hay secuencias cargadas.");
         return;
     }
     if (subsecuencia == nullptr || subsecuencia[0] == '\0') {
-        cout << termcolor::yellow << "\t[Enmascarar/Advertencia]: Subsecuencia vacía o inválida." << termcolor::reset << endl;
+        LOG_ADVERTENCIA("Enmascarar", "Subsecuencia vacía o inválida.");
         return;
     }
 
@@ -145,11 +149,9 @@ void Genoma::Enmascarar(const char *subsecuencia) {
         long enmascaradasEnSecuencia = 0;
         // Búsqueda lineal no solapada; avance por largoSub si matchea, sino 1
         for (size_t i = 0; i + largoSub <= secuencia.bases.size();) {
-            bool coincide = true;
             // Use std::equal for faster/more optimized comparison of the range.
             // (Requires #include <algorithm> in the file.)
-            coincide = equal(secuencia.bases.begin() + i, secuencia.bases.begin() + i + largoSub, subsecuencia);
-            if (coincide) {
+            if (equal(secuencia.bases.begin() + i, secuencia.bases.begin() + i + largoSub, subsecuencia)) {
                 // Enmascarar
                 for (size_t k = 0; k < largoSub; ++k) {
                     secuencia.bases[i + k] = 'X';
@@ -164,14 +166,14 @@ void Genoma::Enmascarar(const char *subsecuencia) {
         }
 
         if (enmascaradasEnSecuencia > 0) {
-            cout << termcolor::cyan << "\t[Enmascarar]: La subsecuencia '" << subsecuencia << "' se enmascaró " << enmascaradasEnSecuencia << (enmascaradasEnSecuencia == 1 ? " vez" : " veces") << " en la secuencia '" << secuencia.descripcion << "'." << termcolor::reset << endl;
+            LOG_INFO("Enmascarar", string("La subsecuencia '") + subsecuencia + "' se enmascaró " + to_string(enmascaradasEnSecuencia) + (enmascaradasEnSecuencia==1?" vez":" veces") + " en la secuencia '" + secuencia.descripcion + "'.");
         }
     }
 
     if (totalEnmascaradas == 0) {
-        cout << termcolor::yellow << "\t[Enmascarar/Advertencia]: No se encontraron coincidencias de '" << subsecuencia << "'." << termcolor::reset << endl;
+        LOG_ADVERTENCIA("Enmascarar", string("No se encontraron coincidencias de '") + subsecuencia + "'.");
     } else {
-        cout << termcolor::green << "\t[Enmascarar]: Se enmascaró la subsecuencia '" << subsecuencia << "' " << totalEnmascaradas << (totalEnmascaradas == 1 ? " vez" : " veces") << " en total (" << totalBasesEnmascaradas << " bases reemplazadas)." << termcolor::reset << endl;
+        LOG_EXITO("Enmascarar", string("Se enmascaró la subsecuencia '") + subsecuencia + "' " + to_string(totalEnmascaradas) + (totalEnmascaradas==1?" vez":" veces") + " en total (" + to_string(totalBasesEnmascaradas) + " bases reemplazadas).");
     }
 }
 
