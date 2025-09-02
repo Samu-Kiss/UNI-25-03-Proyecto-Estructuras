@@ -53,6 +53,34 @@ void Guardar(const string &nombre_archivo) {
     // No hay secuencias cargadas
     // Archivo guardado exitosamente
     // Error al guardar el archivo
+    if (genoma.secuencias.empty()) {
+        LOG_ADVERTENCIA("Guardar", "No hay secuencias cargadas.");
+        return;
+    }
+
+    // Intentar abrir el archivo
+    ofstream archivo(nombre_archivo);
+    if (!archivo.is_open()) {
+        LOG_ERROR("Guardar", "No se pudo abrir el archivo para guardar.");
+        return;
+    }
+
+    // Guardar las secuencias en el archivo
+    for (const Secuencia& secuencia : genoma.secuencias) {
+        archivo << ">" << secuencia.descripcion << endl;
+
+        vector<char>::const_iterator it = secuencia.bases.begin();
+        for (int i = 0; it != secuencia.bases.end(); i++) {
+            if (i % secuencia.ancho_linea == 0 && i != 0) archivo << endl;
+            archivo << *it;
+            it++;
+        }
+
+        archivo << endl;
+    }
+
+    archivo.close();
+    LOG_EXITO("Guardar", "Archivo guardado exitosamente.");
 }
 
 // Función para codificar un archivo
