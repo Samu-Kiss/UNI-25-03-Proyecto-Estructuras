@@ -5,9 +5,28 @@
 #include "./secuencia.h"
 
 class Genoma {
-    public:
+private:
+    std::vector<Secuencia> secuencias_{};
 
-    vector<Secuencia> secuencias;
+public:
+    // Constructores
+    Genoma() = default;
+    explicit Genoma(const std::vector<Secuencia> &secuencias)
+        : secuencias_(secuencias) {}
+
+    // Destructor
+    ~Genoma() = default;
+
+    // Getters
+    [[nodiscard]] const std::vector<Secuencia> &get_secuencias() const { return secuencias_; }
+    // Getter no const para modificar
+    std::vector<Secuencia> &get_secuencias() { return secuencias_; }
+
+    // Setters
+    void set_secuencias(const std::vector<Secuencia> &secuencias) { secuencias_ = secuencias; }
+    void clear_secuencias() { secuencias_.clear(); }
+    void add_secuencia(const Secuencia &s) { secuencias_.push_back(s); }
+    size_t size() const { return secuencias_.size(); }
 
     //ListarSecuencias() -> void
     void ListarSecuencias();
