@@ -49,7 +49,7 @@ void Guardar(const string &nombre_archivo) {
     // No hay secuencias cargadas
     // Archivo guardado exitosamente
     // Error al guardar el archivo
-    if (genoma.secuencias.empty()) {
+    if (genoma.get_secuencias().empty()) {
         LOG_ADVERTENCIA("Guardar", "No hay secuencias cargadas.");
         return;
     }
@@ -62,13 +62,13 @@ void Guardar(const string &nombre_archivo) {
     }
 
     // Guardar las secuencias en el archivo
-    for (const Secuencia& secuencia : genoma.secuencias) {
-        archivo << ">" << secuencia.descripcion << endl;
+    for (const Secuencia& secuencia : genoma.get_secuencias()) {
+        archivo << ">" << secuencia.get_descripcion() << endl;
 
-        vector<char>::const_iterator it = secuencia.bases.begin();
-        for (size_t i = 0; i < secuencia.bases.size(); ++i) {
-            if (i % secuencia.ancho_linea == 0 && i != 0) archivo << endl;
-            archivo << secuencia.bases[i];
+        const auto &bases = secuencia.get_bases();
+        for (size_t i = 0; i < bases.size(); ++i) {
+            if (i % secuencia.get_ancho_linea() == 0 && i != 0) archivo << endl;
+            archivo << bases[i];
         }
 
         archivo << endl;
@@ -196,7 +196,7 @@ void LimpiarPantalla() {
 
 // Función para cargar un archivo
 bool Cargar(const string &nombre_archivo) {
-    genoma.secuencias.clear();
+    genoma.clear_secuencias();
     ifstream archivo_entrada(nombre_archivo);
     if (!archivo_entrada) {
         LOG_ERROR("Cargar", string("No se pudo abrir el archivo ") + nombre_archivo);
@@ -218,15 +218,15 @@ bool Cargar(const string &nombre_archivo) {
     while (getline(archivo_entrada, linea)) {
         if (linea.empty()) {
             // Línea vacía actúa como separador entre secuencias.
-            if (!nueva_secuencia.descripcion.empty() || !nueva_secuencia.bases.empty()) {
-                if (nueva_secuencia.descripcion.empty() && !nueva_secuencia.bases.empty()) {
+            if (!nueva_secuencia.get_descripcion().empty() || !nueva_secuencia.get_bases().empty()) {
+                if (nueva_secuencia.get_descripcion().empty() && !nueva_secuencia.get_bases().empty()) {
                     LOG_ADVERTENCIA("Cargar", string("Se encontró una secuencia sin descripción en el archivo ") + nombre_archivo + ". Se descarta la secuencia.");
-                } else if (!nueva_secuencia.descripcion.empty() && nueva_secuencia.bases.empty()) {
-                    LOG_ADVERTENCIA("Cargar", string("La secuencia '") + nueva_secuencia.descripcion + "' no contiene bases. Se descarta la secuencia.");
+                } else if (!nueva_secuencia.get_descripcion().empty() && nueva_secuencia.get_bases().empty()) {
+                    LOG_ADVERTENCIA("Cargar", string("La secuencia '") + nueva_secuencia.get_descripcion() + "' no contiene bases. Se descarta la secuencia.");
                 } else {
-                    genoma.secuencias.push_back(nueva_secuencia);
+                    genoma.add_secuencia(nueva_secuencia);
                     ++countAdded;
-                    LOG_EXITO("Cargar", string("Secuencia añadida: ") + nueva_secuencia.descripcion);
+                    LOG_EXITO("Cargar", string("Secuencia añadida: ") + nueva_secuencia.get_descripcion());
                 }
                 nueva_secuencia = Secuencia();
                 firstLine = false;
@@ -239,41 +239,41 @@ bool Cargar(const string &nombre_archivo) {
         // La línea que marca el inicio de la secuencia es ">{descripcion de la secuencia}"
         if (linea[0] == '>') {
             // Si había una secuencia en construcción, procesarla antes de comenzar la nueva
-            if (!nueva_secuencia.descripcion.empty() || !nueva_secuencia.bases.empty()) {
-                if (nueva_secuencia.descripcion.empty() && !nueva_secuencia.bases.empty()) {
+            if (!nueva_secuencia.get_descripcion().empty() || !nueva_secuencia.get_bases().empty()) {
+                if (nueva_secuencia.get_descripcion().empty() && !nueva_secuencia.get_bases().empty()) {
                     LOG_ADVERTENCIA("Cargar", string("Se encontró una secuencia sin descripción en el archivo ") + nombre_archivo + ". Se descarta la secuencia.");
-                } else if (!nueva_secuencia.descripcion.empty() && nueva_secuencia.bases.empty()) {
-                    LOG_ADVERTENCIA("Cargar", string("La secuencia '") + nueva_secuencia.descripcion + "' no contiene bases. Se descarta la secuencia.");
+                } else if (!nueva_secuencia.get_descripcion().empty() && nueva_secuencia.get_bases().empty()) {
+                    LOG_ADVERTENCIA("Cargar", string("La secuencia '") + nueva_secuencia.get_descripcion() + "' no contiene bases. Se descarta la secuencia.");
                 } else {
-                    genoma.secuencias.push_back(nueva_secuencia);
+                    genoma.add_secuencia(nueva_secuencia);
                     ++countAdded;
-                    LOG_EXITO("Cargar", string("Secuencia añadida: ") + nueva_secuencia.descripcion);
+                    LOG_EXITO("Cargar", string("Secuencia añadida: ") + nueva_secuencia.get_descripcion());
                 }
             }
             nueva_secuencia = Secuencia();
-            nueva_secuencia.descripcion = linea.substr(1);
+            nueva_secuencia.set_descripcion(linea.substr(1));
             firstLine = true;
         } else {
             if (firstLine) {
-                nueva_secuencia.ancho_linea = linea.length();
+                nueva_secuencia.set_ancho_linea(static_cast<int>(linea.length()));
                 firstLine = false;
             }
             for (char base: linea) {
-                nueva_secuencia.bases.push_back(base);
+                nueva_secuencia.add_base(base);
             }
         }
     }
 
     // Agregar la última secuencia si existe y es válida
-    if (!nueva_secuencia.descripcion.empty() || !nueva_secuencia.bases.empty()) {
-        if (nueva_secuencia.descripcion.empty() && !nueva_secuencia.bases.empty()) {
+    if (!nueva_secuencia.get_descripcion().empty() || !nueva_secuencia.get_bases().empty()) {
+        if (nueva_secuencia.get_descripcion().empty() && !nueva_secuencia.get_bases().empty()) {
             LOG_ADVERTENCIA("Cargar", string("Se encontró una secuencia sin descripción en el archivo ") + nombre_archivo + ". Se descarta la secuencia.");
-        } else if (!nueva_secuencia.descripcion.empty() && nueva_secuencia.bases.empty()) {
-            LOG_ADVERTENCIA("Cargar", string("La secuencia '") + nueva_secuencia.descripcion + "' no contiene bases. Se descarta la secuencia.");
+        } else if (!nueva_secuencia.get_descripcion().empty() && nueva_secuencia.get_bases().empty()) {
+            LOG_ADVERTENCIA("Cargar", string("La secuencia '") + nueva_secuencia.get_descripcion() + "' no contiene bases. Se descarta la secuencia.");
         } else {
-            genoma.secuencias.push_back(nueva_secuencia);
+            genoma.add_secuencia(nueva_secuencia);
             ++countAdded;
-            LOG_EXITO("Cargar", string("Secuencia añadida: ") + nueva_secuencia.descripcion);
+            LOG_EXITO("Cargar", string("Secuencia añadida: ") + nueva_secuencia.get_descripcion());
         }
     }
 

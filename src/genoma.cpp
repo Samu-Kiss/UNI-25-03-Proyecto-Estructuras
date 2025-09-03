@@ -9,11 +9,14 @@
 
 using namespace std;
 
+
+
 //ListarSecuencias() -> void
 void Genoma::ListarSecuencias() {
     // Posibles estados:
     // No hay secuencias cargadas
     // Resultado exitoso: Hay n secuencias cargadas
+    auto &secuencias = get_secuencias();
     if (secuencias.empty()) {
         LOG_ADVERTENCIA("ListarSecuencias", "No hay secuencias cargadas.");
         return;
@@ -21,12 +24,12 @@ void Genoma::ListarSecuencias() {
     LOG_INFO("ListarSecuencias", string("Total de secuencias: ") + to_string(secuencias.size()));
     for (const Secuencia &secuencia: secuencias) {
         size_t gaps = 0;
-        for (char b: secuencia.bases) {
+        for (char b: secuencia.get_bases()) {
             if (b == '-') {
                 gaps++;
             }
         }
-        string msg = string("La secuencia '") + secuencia.descripcion + "' " + (gaps > 0 ? "tiene al menos " : "tiene ") + to_string(secuencia.bases.size() - gaps) + " bases.";
+        string msg = string("La secuencia '") + secuencia.get_descripcion() + "' " + (gaps > 0 ? "tiene al menos " : "tiene ") + to_string(secuencia.get_bases().size() - gaps) + " bases.";
         LOG_INFO("ListarSecuencias", msg);
     }
 }
@@ -37,9 +40,10 @@ void Genoma::Histograma(const char *descripcion_secuencia) {
     // la secuencia no existe: secuencia inválida
     // la secuencia existe A: frecuencia a \n C: frecuencia c \n G: frecuencia g \n T: frecuencia t \n -: frecuencia -
 
+    auto &secuencias = get_secuencias();
     size_t tam = secuencias.size();
     for (size_t i = 0; i < secuencias.size(); ++i) {
-        if (secuencias[i].descripcion == descripcion_secuencia) {
+        if (secuencias[i].get_descripcion() == descripcion_secuencia) {
             tam = i;
             break;
         }
@@ -57,7 +61,7 @@ void Genoma::Histograma(const char *descripcion_secuencia) {
         frec[i] = 0;
     }
 
-    const vector<char> &bases = secuencias[tam].bases;
+    const vector<char> &bases = secuencias[tam].get_bases();
 
     for (size_t i = 0; i < bases.size(); ++i) {
         char b = bases[i];
@@ -69,7 +73,7 @@ void Genoma::Histograma(const char *descripcion_secuencia) {
         }
     }
 
-    LOG_INFO("Histograma", string("Frecuencias de '") + secuencias[tam].descripcion + "':");
+    LOG_INFO("Histograma", string("Frecuencias de '") + secuencias[tam].get_descripcion() + "':");
     for (int i = 0; i < 18; ++i) {
         Log("Histograma", LogEstado::Info, string(1, tabla[i]) + " -> " + to_string(frec[i]));
     }
@@ -82,6 +86,7 @@ bool Genoma::EsSubsecuencia(const char *subsecuencia) {
     // La subsecuencia no existe
     // Varias subsecuencias
 
+    auto &secuencias = get_secuencias();
     if (secuencias.empty()) {
         LOG_ADVERTENCIA("EsSubsecuencia", "No hay secuencias cargadas en memoria.");
         return false;
@@ -97,7 +102,7 @@ bool Genoma::EsSubsecuencia(const char *subsecuencia) {
     int total = 0;
 
     for (size_t s = 0; s < secuencias.size(); s++) {
-        const vector<char> &scs = secuencias[s].bases;
+        const vector<char> &scs = secuencias[s].get_bases();
 
         for (size_t i = 0; i + tam <= scs.size(); i++) {
             size_t k = 0;
@@ -123,6 +128,7 @@ bool Genoma::EsSubsecuencia(const char *subsecuencia) {
 //Enmascarar(subsecuencia) -> void
 void Genoma::Enmascarar(const char *subsecuencia) {
     // Validaciones básicas
+    auto &secuencias = get_secuencias();
     if (secuencias.empty()) {
         LOG_ADVERTENCIA("Enmascarar", "No hay secuencias cargadas.");
         return;
@@ -138,18 +144,17 @@ void Genoma::Enmascarar(const char *subsecuencia) {
     long totalBasesEnmascaradas = 0; // cantidad total de bases reemplazadas por 'X'
 
     for (Secuencia &secuencia: secuencias) {
-        if (secuencia.bases.size() < largoSub) continue; // imposible que exista
+        if (secuencia.get_bases().size() < largoSub) continue; // imposible que exista
 
         long enmascaradasEnSecuencia = 0;
         // Búsqueda lineal no solapada; avance por largoSub si matchea, sino 1
-        for (size_t i = 0; i + largoSub <= secuencia.bases.size();) {
+    for (size_t i = 0; i + largoSub <= secuencia.get_bases().size();) {
             // Use std::equal for faster/more optimized comparison of the range.
             // (Requires #include <algorithm> in the file.)
-            if (equal(secuencia.bases.begin() + i, secuencia.bases.begin() + i + largoSub, subsecuencia)) {
+            auto &basesRef = secuencia.get_bases();
+            if (equal(basesRef.begin() + i, basesRef.begin() + i + largoSub, subsecuencia)) {
                 // Enmascarar
-                for (size_t k = 0; k < largoSub; ++k) {
-                    secuencia.bases[i + k] = 'X';
-                }
+                for (size_t k = 0; k < largoSub; ++k) { secuencia.set_base(i + k, 'X'); }
                 ++enmascaradasEnSecuencia;
                 ++totalEnmascaradas;
                 totalBasesEnmascaradas += largoSub;
@@ -160,7 +165,7 @@ void Genoma::Enmascarar(const char *subsecuencia) {
         }
 
         if (enmascaradasEnSecuencia > 0) {
-            LOG_INFO("Enmascarar", string("La subsecuencia '") + subsecuencia + "' se enmascaró " + to_string(enmascaradasEnSecuencia) + (enmascaradasEnSecuencia==1?" vez":" veces") + " en la secuencia '" + secuencia.descripcion + "'.");
+            LOG_INFO("Enmascarar", string("La subsecuencia '") + subsecuencia + "' se enmascaró " + to_string(enmascaradasEnSecuencia) + (enmascaradasEnSecuencia==1?" vez":" veces") + " en la secuencia '" + secuencia.get_descripcion() + "'.");
         }
     }
 
