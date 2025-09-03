@@ -1,4 +1,4 @@
-﻿#include "./termcolor.hpp" // Librería para colores en la consola
+#include "./termcolor.hpp" // Librería para colores en la consola
 #include "./secuencia.h"
 #include "./genoma.h"
 #include "./log.hpp"
