@@ -112,29 +112,57 @@ bool Genoma::EsSubsecuencia(const char *subsecuencia) {
                 char b = subsecuencia[k];  // letra en la subsecuencia
                 bool equiv = false;
 
-                switch (a) { //Equivalencias
-                    case 'A': equiv = (b=='A'); break;
-                    case 'C': equiv = (b=='C'); break;
-                    case 'G': equiv = (b=='G'); break;
-                    case 'T': equiv = (b=='T'); break;
-                    case 'U': equiv = (b=='U'); break;
-                    case 'R': equiv = (b=='A' || b=='G' || b=='R'); break;                 
-                    case 'Y': equiv = (b=='C' || b=='T' || b=='U' || b=='Y'); break;      
-                    case 'K': equiv = (b=='G' || b=='T' || b=='U' || b=='K'); break;   
-                    case 'M': equiv = (b=='A' || b=='C' || b=='M'); break;              
-                    case 'S': equiv = (b=='C' || b=='G' || b=='S'); break;                
-                    case 'W': equiv = (b=='A' || b=='T' || b=='U' || b=='W'); break;     
-                    case 'B': equiv = (b=='C' || b=='G' || b=='T' || b=='U' || b=='B'); break; 
-                    case 'D': equiv = (b=='A' || b=='G' || b=='T' || b=='U' || b=='D'); break; 
-                    case 'H': equiv = (b=='A' || b=='C' || b=='T' || b=='U' || b=='H'); break; 
-                    case 'V': equiv = (b=='A' || b=='C' || b=='G' || b=='V'); break;      
-                    case 'N': equiv = (b=='A' || b=='C' || b=='G' || b=='T' || b=='U' || b=='N'); break; // cualquiera
-                    case 'X': equiv = (b=='X'); break; //Mascara
-                    case '-': equiv = (b=='-'); break; //Indeterminado
-                    default:  equiv = false;           
+                // 1) ¿a pertenece al conjunto que representa b?
+                switch (b) {
+                    case 'A': equiv = (a=='A'); break;
+                    case 'C': equiv = (a=='C'); break;
+                    case 'G': equiv = (a=='G'); break;
+                    case 'T': equiv = (a=='T'); break;
+                    case 'U': equiv = (a=='U'); break;
+                    case 'R': equiv = (a=='A' || a=='G'); break;
+                    case 'Y': equiv = (a=='C' || a=='T' || a=='U'); break;
+                    case 'K': equiv = (a=='G' || a=='T' || a=='U'); break;
+                    case 'M': equiv = (a=='A' || a=='C'); break;
+                    case 'S': equiv = (a=='C' || a=='G'); break;
+                    case 'W': equiv = (a=='A' || a=='T' || a=='U'); break;
+                    case 'B': equiv = (a=='C' || a=='G' || a=='T' || a=='U'); break;
+                    case 'D': equiv = (a=='A' || a=='G' || a=='T' || a=='U'); break;
+                    case 'H': equiv = (a=='A' || a=='C' || a=='T' || a=='U'); break;
+                    case 'V': equiv = (a=='A' || a=='C' || a=='G'); break;
+                    case 'N': equiv = (a=='A' || a=='C' || a=='G' || a=='T' || a=='U'); break;
+                    case 'X': equiv = (a=='X'); break;   
+                    case '-': equiv = (a=='-'); break;   
+                    default:  equiv = false;             
                 }
 
-                if (!equiv) break;
+				if (!equiv) {
+				switch (a) {
+					case 'A': equiv = (b=='A' || b=='R' || b=='M' || b=='W' || b=='D' || b=='H' || b=='V' || b=='N'); break;
+					case 'C': equiv = (b=='C' || b=='Y' || b=='M' || b=='S' || b=='B' || b=='H' || b=='V' || b=='N'); break;
+					case 'G': equiv = (b=='G' || b=='R' || b=='S' || b=='K' || b=='B' || b=='D' || b=='V' || b=='N'); break;
+					case 'T': equiv = (b=='T' || b=='Y' || b=='W' || b=='K' || b=='B' || b=='D' || b=='H' || b=='N'); break;
+					case 'U': equiv = (b=='U' || b=='Y' || b=='W' || b=='K' || b=='B' || b=='D' || b=='H' || b=='N'); break;
+					case 'R': equiv = (b=='A' || b=='G' || b=='R'); break;        
+					case 'Y': equiv = (b=='C' || b=='T' || b=='U' || b=='Y'); break;   
+					case 'K': equiv = (b=='G' || b=='T' || b=='U' || b=='K'); break;    
+					case 'M': equiv = (b=='A' || b=='C' || b=='M'); break;          
+					case 'S': equiv = (b=='C' || b=='G' || b=='S'); break;               
+					case 'W': equiv = (b=='A' || b=='T' || b=='U' || b=='W'); break;     
+					case 'B': equiv = (b=='C' || b=='G' || b=='T' || b=='U' || b=='B'); break;
+					case 'D': equiv = (b=='A' || b=='G' || b=='T' || b=='U' || b=='D'); break;
+					case 'H': equiv = (b=='A' || b=='C' || b=='T' || b=='U' || b=='H'); break;
+					case 'V': equiv = (b=='A' || b=='C' || b=='G' || b=='V'); break;
+					case 'N': equiv = (b=='A' || b=='C' || b=='G' || b=='T' || b=='U' || b=='N'); break;
+
+					case 'X': equiv = (b=='X'); break; 
+					case '-': equiv = (b=='-'); break;  
+					default:  equiv = false;
+				}
+			}
+
+                if (!equiv) { 
+				break;
+				}
                 k++;
             }
 
