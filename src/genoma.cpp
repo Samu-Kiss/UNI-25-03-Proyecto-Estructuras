@@ -107,7 +107,34 @@ bool Genoma::EsSubsecuencia(const char *subsecuencia) {
         for (size_t i = 0; i + tam <= scs.size(); i++) {
             size_t k = 0;
 
-            while (k < tam && scs[i + k] == subsecuencia[k]) {
+            while (k < tam) {
+                char a = scs[i + k];       // letra en la secuencia
+                char b = subsecuencia[k];  // letra en la subsecuencia
+                bool equiv = false;
+
+                switch (a) { //Equivalencias
+                    case 'A': equiv = (b=='A'); break;
+                    case 'C': equiv = (b=='C'); break;
+                    case 'G': equiv = (b=='G'); break;
+                    case 'T': equiv = (b=='T'); break;
+                    case 'U': equiv = (b=='U'); break;
+                    case 'R': equiv = (b=='A' || b=='G' || b=='R'); break;                 
+                    case 'Y': equiv = (b=='C' || b=='T' || b=='U' || b=='Y'); break;      
+                    case 'K': equiv = (b=='G' || b=='T' || b=='U' || b=='K'); break;   
+                    case 'M': equiv = (b=='A' || b=='C' || b=='M'); break;              
+                    case 'S': equiv = (b=='C' || b=='G' || b=='S'); break;                
+                    case 'W': equiv = (b=='A' || b=='T' || b=='U' || b=='W'); break;     
+                    case 'B': equiv = (b=='C' || b=='G' || b=='T' || b=='U' || b=='B'); break; 
+                    case 'D': equiv = (b=='A' || b=='G' || b=='T' || b=='U' || b=='D'); break; 
+                    case 'H': equiv = (b=='A' || b=='C' || b=='T' || b=='U' || b=='H'); break; 
+                    case 'V': equiv = (b=='A' || b=='C' || b=='G' || b=='V'); break;      
+                    case 'N': equiv = (b=='A' || b=='C' || b=='G' || b=='T' || b=='U' || b=='N'); break; // cualquiera
+                    case 'X': equiv = (b=='X'); break; //Mascara
+                    case '-': equiv = (b=='-'); break; //Indeterminado
+                    default:  equiv = false;           
+                }
+
+                if (!equiv) break;
                 k++;
             }
 
