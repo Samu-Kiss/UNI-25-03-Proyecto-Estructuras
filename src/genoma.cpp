@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 #include <cstring>
+#include <algorithm>
 
 using namespace std;
 
@@ -23,14 +24,68 @@ void Genoma::ListarSecuencias() {
     }
     LOG_INFO("ListarSecuencias", string("Total de secuencias: ") + to_string(secuencias.size()));
     for (const Secuencia &secuencia: secuencias) {
-        size_t gaps = 0;
-        for (char b: secuencia.get_bases()) {
-            if (b == '-') {
-                gaps++;
+        bool completa = true;
+        vector<int> frec(5, -1); // A, C, G, T, U
+        for (char base: secuencia.get_bases()) {
+            //CHECK SI ESTÁ COMPLETA
+            if (!(base == 'A' || base == 'C' || base == 'G' || base == 'T' || base == 'U')) {
+                completa = false;
+            }
+
+            // ADENINA
+            if (base == 'A' || base == 'R' || base == 'M' || base == 'W' || base == 'D' || base == 'H' || base == 'V' || base == 'N' || base == 'X') {
+                if (frec[0] == -1) {
+                    frec[0] = 1;
+                } else {
+                    frec[0]++;
+                }
+            }
+            // CITOSINA
+            if (base == 'C' || base == 'Y' || base == 'M' || base == 'S' || base == 'B' || base == 'H' || base == 'V' || base == 'N' || base == 'X') {
+                if (frec[1] == -1) {
+                    frec[1] = 1;
+                } else {
+                    frec[1]++;
+                }
+            }
+            // GUANINA
+            if (base == 'G' || base == 'R' || base == 'K' || base == 'S' || base == 'B' || base == 'D' || base == 'V' || base == 'N' || base == 'X') {
+                if (frec[2] == -1) {
+                    frec[2] = 1;
+                } else {
+                    frec[2]++;
+                }
+            }
+            // TIMINA
+            if (base == 'T' || base == 'Y' || base == 'K' || base == 'W' || base == 'B' || base == 'D' || base == 'H' || base == 'N' || base == 'X') {
+                if (frec[3] == -1) {
+                    frec[3] = 1;
+                } else {
+                    frec[3]++;
+                }
+            }
+            // URACILO
+            if (base == 'U' || base == 'Y' || base == 'K' || base == 'W' || base == 'B' || base == 'D' || base == 'H' || base == 'N' || base == 'X') {
+                if (frec[4] == -1) {
+                    frec[4] = 1;
+                } else {
+                    frec[4]++;
+                }
             }
         }
-        string msg = string("La secuencia '") + secuencia.get_descripcion() + "' " + (gaps > 0 ? "tiene al menos " : "tiene ") + to_string(secuencia.get_bases().size() - gaps) + " bases.";
+
+        //Ordenar vector en orden descendente
+        sort(frec.rbegin(), frec.rend());
+
+        string msg = string("La secuencia '") + secuencia.get_descripcion() + "' " + (completa ? "tiene " : "tiene al menos ") + to_string(secuencia.bases_size()) + " bases.";
         LOG_INFO("ListarSecuencias", msg);
+
+        // DEBUG: Mostrar frecuencias
+        for (size_t i = 0; i < frec.size(); i++) {
+            if (frec[i] > 0) {
+                LOG_INFO("ListarSecuencias", string("Base ") + to_string(i) + ": " + to_string(frec[i]));
+            }
+        }
     }
 }
 
