@@ -1,3 +1,4 @@
+// genoma.cpp
 #include "./termcolor.hpp"
 #include "./secuencia.h"
 #include "./genoma.h"
@@ -7,10 +8,29 @@
 #include <string>
 #include <cstring>
 #include <algorithm>
+#include <set>
+#include <map>
 
 using namespace std;
 
 
+
+// ==========================
+// Constructores / Destructor
+// ==========================
+Genoma::Genoma() = default;
+Genoma::Genoma(const std::vector<Secuencia> &secuencias) : secuencias_(secuencias) {}
+Genoma::~Genoma() = default;
+
+// ======= Getters ========
+const std::vector<Secuencia> &Genoma::get_secuencias() const { return secuencias_; }
+std::vector<Secuencia> &Genoma::get_secuencias() { return secuencias_; }
+
+// ====== Setters / Modificadores ======
+void Genoma::set_secuencias(const std::vector<Secuencia> &secuencias) { secuencias_ = secuencias; }
+void Genoma::clear_secuencias() { secuencias_.clear(); }
+void Genoma::add_secuencia(const Secuencia &s) { secuencias_.push_back(s); }
+size_t Genoma::size() const { return secuencias_.size(); }
 
 //ListarSecuencias() -> void
 void Genoma::ListarSecuencias() {
@@ -23,69 +43,73 @@ void Genoma::ListarSecuencias() {
         return;
     }
     LOG_INFO("ListarSecuencias", string("Total de secuencias: ") + to_string(secuencias.size()));
+
+        map<char, set<char>> complementos;
+        complementos['A'] = {'A'                    };
+        complementos['C'] = {     'C'               };
+        complementos['G'] = {          'G'          };
+        complementos['T'] = {               'T'     };
+        complementos['U'] = {                    'U'};
+
+        complementos['R'] = {'A',      'G'          };
+        complementos['Y'] = {     'C',      'T', 'U'};
+
+        complementos['K'] = {          'G', 'T', 'U'};
+        complementos['M'] = {'A', 'C'               };
+
+        complementos['S'] = {     'C', 'G'          };
+        complementos['W'] = {'A',           'T', 'U'};
+        
+        complementos['B'] = {     'C', 'G', 'T', 'U'};
+        complementos['D'] = {'A',      'G', 'T', 'U'};
+        complementos['H'] = {'A', 'C',      'T', 'U'};
+        complementos['V'] = {'A', 'C', 'G'          };
+        complementos['N'] = {'A', 'C', 'G', 'T', 'U'};
+        complementos['X'] = {'A', 'C', 'G', 'T', 'U'};
+
     for (const Secuencia &secuencia: secuencias) {
-        bool completa = true;
-        vector<int> frec(5, -1); // A, C, G, T, U
-        for (char base: secuencia.get_bases()) {
-            //CHECK SI ESTÁ COMPLETA
-            if (!(base == 'A' || base == 'C' || base == 'G' || base == 'T' || base == 'U')) {
-                completa = false;
-            }
+        bool completa = true; // Indica si la secuencia es completa, en otras palabras si en la secuencia unicamente hay bases fijas
 
-            // ADENINA
-            if (base == 'A' || base == 'R' || base == 'M' || base == 'W' || base == 'D' || base == 'H' || base == 'V' || base == 'N' || base == 'X') {
-                if (frec[0] == -1) {
-                    frec[0] = 1;
-                } else {
-                    frec[0]++;
-                }
+        //set list para asegurar unicidad
+        vector<char> bases = secuencia.get_bases();
+        set<char> basesUnicas;
+
+        size_t gaps = 0;
+
+        // Agregar bases fijas y contar espacios "-"
+        for (char base: bases) {
+            if (base == 'A' || base == 'C' || base == 'G' || base == 'T' || base == 'U') {
+                basesUnicas.insert(base);
+                //borrar la base del vector bases
+                bases.erase(remove(bases.begin(), bases.end(), base), bases.end());
             }
-            // CITOSINA
-            if (base == 'C' || base == 'Y' || base == 'M' || base == 'S' || base == 'B' || base == 'H' || base == 'V' || base == 'N' || base == 'X') {
-                if (frec[1] == -1) {
-                    frec[1] = 1;
-                } else {
-                    frec[1]++;
-                }
+             if (base == '-') {
+                gaps++;
             }
-            // GUANINA
-            if (base == 'G' || base == 'R' || base == 'K' || base == 'S' || base == 'B' || base == 'D' || base == 'V' || base == 'N' || base == 'X') {
-                if (frec[2] == -1) {
-                    frec[2] = 1;
+        }
+
+        //Verifica bases variables
+        for (char base: bases) {
+
+            set<char> complementosBase = complementos[base];
+
+            // Si la interseccion entre basesUnicas y complementosBase es vacia, entonces se añade base a basesUnicas
+            for (char c : complementosBase) { 
+                if (basesUnicas.find(c) != basesUnicas.end()) {
+                    completa = false; 
+                    break;
                 } else {
-                    frec[2]++;
-                }
-            }
-            // TIMINA
-            if (base == 'T' || base == 'Y' || base == 'K' || base == 'W' || base == 'B' || base == 'D' || base == 'H' || base == 'N' || base == 'X') {
-                if (frec[3] == -1) {
-                    frec[3] = 1;
-                } else {
-                    frec[3]++;
-                }
-            }
-            // URACILO
-            if (base == 'U' || base == 'Y' || base == 'K' || base == 'W' || base == 'B' || base == 'D' || base == 'H' || base == 'N' || base == 'X') {
-                if (frec[4] == -1) {
-                    frec[4] = 1;
-                } else {
-                    frec[4]++;
+                    basesUnicas.insert(c);
+                    completa = false;
+                    break;
                 }
             }
         }
 
-        //Ordenar vector en orden descendente
-        sort(frec.rbegin(), frec.rend());
 
-        string msg = string("La secuencia '") + secuencia.get_descripcion() + "' " + (completa ? "tiene " : "tiene al menos ") + to_string(secuencia.bases_size()) + " bases.";
+
+        string msg = string("La secuencia '") + secuencia.get_descripcion() + "' " + (completa || basesUnicas.size() == 5 ? "tiene " : "tiene al menos ") + to_string(basesUnicas.size()) + " bases. Y la secuencia es de " + (gaps == 0 ? "exactamente " : "al menos ") + to_string(secuencia.bases_size()-gaps) + " bases de largo.";
         LOG_INFO("ListarSecuencias", msg);
-
-        // DEBUG: Mostrar frecuencias
-        for (size_t i = 0; i < frec.size(); i++) {
-            if (frec[i] > 0) {
-                LOG_INFO("ListarSecuencias", string("Base ") + to_string(i) + ": " + to_string(frec[i]));
-            }
-        }
     }
 }
 

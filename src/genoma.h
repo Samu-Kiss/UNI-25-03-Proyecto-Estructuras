@@ -9,43 +9,28 @@ private:
     std::vector<Secuencia> secuencias_{};
 
 public:
-    // Constructores
-    Genoma() = default;
-    explicit Genoma(const std::vector<Secuencia> &secuencias)
-        : secuencias_(secuencias) {}
-
-    // Destructor
-    ~Genoma() = default;
+    // Constructores / Destructor
+    Genoma();
+    explicit Genoma(const std::vector<Secuencia> &secuencias);
+    ~Genoma();
 
     // Getters
-    [[nodiscard]] const std::vector<Secuencia> &get_secuencias() const { return secuencias_; }
-    // Getter no const para modificar
-    std::vector<Secuencia> &get_secuencias() { return secuencias_; }
+    [[nodiscard]] const std::vector<Secuencia> &get_secuencias() const;
+    std::vector<Secuencia> &get_secuencias(); // no const
 
-    // Setters
-    void set_secuencias(const std::vector<Secuencia> &secuencias) { secuencias_ = secuencias; }
-    void clear_secuencias() { secuencias_.clear(); }
-    void add_secuencia(const Secuencia &s) { secuencias_.push_back(s); }
-    size_t size() const { return secuencias_.size(); }
+    // Setters / Modificadores
+    void set_secuencias(const std::vector<Secuencia> &secuencias);
+    void clear_secuencias();
+    void add_secuencia(const Secuencia &s);
+    size_t size() const;
 
-    //ListarSecuencias() -> void
+    // Operaciones
     void ListarSecuencias();
-
-    //Histograma(descripcion_secuencia) -> void
     void Histograma(const char* descripcion_secuencia);
-
-    //EsSubsecuencia(subsecuencia) -> booleano
     bool EsSubsecuencia(const char* subsecuencia);
-
-    //Enmascarar(subsecuencia) -> void
     void Enmascarar(const char* subsecuencia);
-
-    //RutaMasCorta(descripcion_secuencia, i, j, x, y) -> void
     void RutaMasCorta(const char* descripcion_secuencia, int i, int j, int x, int y);
-
-    //BaseRemota (descripcion_secuencia, i, j) -> void
     void BaseRemota(const char* descripcion_secuencia, int i, int j);
-
 };
 
 #endif // GENOMA_H
