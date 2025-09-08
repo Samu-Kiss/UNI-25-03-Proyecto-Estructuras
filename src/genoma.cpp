@@ -37,72 +37,73 @@ void Genoma::ListarSecuencias() {
     // Posibles estados:
     // No hay secuencias cargadas
     // Resultado exitoso: Hay n secuencias cargadas
-    std::vector<Secuencia>& secuencias = get_secuencias();
+    vector<Secuencia>& secuencias = get_secuencias();
     if (secuencias.empty()) {
         LOG_ADVERTENCIA("ListarSecuencias", "No hay secuencias cargadas.");
         return;
     }
     LOG_INFO("ListarSecuencias", string("Total de secuencias: ") + to_string(secuencias.size()));
 
-        map<char, set<char>> complementos;
-        complementos['A'] = {'A'                    };
-        complementos['C'] = {     'C'               };
-        complementos['G'] = {          'G'          };
-        complementos['T'] = {               'T'     };
-        complementos['U'] = {                    'U'};
+        // Usar vectores en lugar de map<>, set<>
+        vector<vector<char>> complementos(256);
+        complementos['A'].push_back('A');
+        complementos['C'].push_back('C');
+        complementos['G'].push_back('G');
+        complementos['T'].push_back('T');
+        complementos['U'].push_back('U');
 
-        complementos['R'] = {'A',      'G'          };
-        complementos['Y'] = {     'C',      'T', 'U'};
+        complementos['R'] = {'A', 'G'};
+        complementos['Y'] = {'C', 'T', 'U'};
 
-        complementos['K'] = {          'G', 'T', 'U'};
-        complementos['M'] = {'A', 'C'               };
+        complementos['K'] = {'G', 'T', 'U'};
+        complementos['M'] = {'A', 'C'};
 
-        complementos['S'] = {     'C', 'G'          };
-        complementos['W'] = {'A',           'T', 'U'};
-        
-        complementos['B'] = {     'C', 'G', 'T', 'U'};
-        complementos['D'] = {'A',      'G', 'T', 'U'};
-        complementos['H'] = {'A', 'C',      'T', 'U'};
-        complementos['V'] = {'A', 'C', 'G'          };
+        complementos['S'] = {'C', 'G'};
+        complementos['W'] = {'A', 'T', 'U'};
+
+        complementos['B'] = {'C', 'G', 'T', 'U'};
+        complementos['D'] = {'A', 'G', 'T', 'U'};
+        complementos['H'] = {'A', 'C', 'T', 'U'};
+        complementos['V'] = {'A', 'C', 'G'};
         complementos['N'] = {'A', 'C', 'G', 'T', 'U'};
         complementos['X'] = {'A', 'C', 'G', 'T', 'U'};
 
-    for (const Secuencia &secuencia: secuencias) {
-        bool completa = true; // Indica si la secuencia es completa, en otras palabras si en la secuencia unicamente hay bases fijas
+        for (const Secuencia &secuencia: secuencias) {
+        bool completa = true; // Indica si la secuencia es completa (solo bases fijas)
 
-        //set list para asegurar unicidad
+        // Obtener bases y separar fijas / variables, además contar gaps
         vector<char> bases = secuencia.get_bases();
-        set<char> basesUnicas;
-
+        vector<char> basesUnicas;      // reemplazo de set<char>
+        vector<char> basesVariables;   // guardar bases variables (para procesar una vez)
         size_t gaps = 0;
 
-        // Agregar bases fijas y contar espacios "-"
-        for (char base: bases) {
+        for (char base : bases) {
             if (base == 'A' || base == 'C' || base == 'G' || base == 'T' || base == 'U') {
-                basesUnicas.insert(base);
-                //borrar la base del vector bases
-                bases.erase(remove(bases.begin(), bases.end(), base), bases.end());
+            if (find(basesUnicas.begin(), basesUnicas.end(), base) == basesUnicas.end()) {
+                basesUnicas.push_back(base);
             }
-             if (base == '-') {
-                gaps++;
+            } else if (base == '-') {
+            ++gaps;
+            } else {
+            if (find(basesVariables.begin(), basesVariables.end(), base) == basesVariables.end()) {
+                basesVariables.push_back(base);
+            }
             }
         }
 
-        //Verifica bases variables
-        for (char base: bases) {
-
-            set<char> complementosBase = complementos[base];
-
-            // Si la interseccion entre basesUnicas y complementosBase es vacia, entonces se añade base a basesUnicas
-            for (char c : complementosBase) { 
-                if (basesUnicas.find(c) != basesUnicas.end()) {
-                    completa = false; 
-                    break;
-                } else {
-                    basesUnicas.insert(c);
-                    completa = false;
-                    break;
-                }
+        // Verifica bases variables usando complementos, manteniendo la misma lógica (añade/consulta la primera
+        // base complementaria encontrada y marca completa = false si hay alguna variable)
+        for (char base : basesVariables) {
+            const vector<char> &comps = complementos[(unsigned char)base];
+            for (char c : comps) {
+            if (find(basesUnicas.begin(), basesUnicas.end(), c) != basesUnicas.end()) {
+                completa = false;
+                break;
+            } else {
+                basesUnicas.push_back(c);
+                completa = false;
+                break;
+            }
             }
         }
 
