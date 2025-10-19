@@ -31,7 +31,7 @@ public:
     // Constructor
     Sistema();
 
-    // Mtodo publico para iniciar la aplicacion
+    // Método público para iniciar la aplicación
     void iniciarConsola();
 };
 
