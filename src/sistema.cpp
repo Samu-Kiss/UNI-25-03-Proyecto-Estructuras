@@ -187,16 +187,192 @@ bool Sistema::cargar(const string &nombre_archivo) {
     return true;
 }
 
+// Funacion para calcular precuencias
+void Sistema::calcularFrecuencias(const std::string &texto, long long (&frecuencias_array)[256], short &num_caracteres_unicos) {
+    for(int i = 0; i < 256; ++i) {
+        frecuencias_array[i] = 0;
+    }
+
+    for (size_t i = 0; i < texto.length(); ++i) {
+        char c = texto[i];
+        frecuencias_array[static_cast<unsigned char>(c)]++;
+    }
+
+    num_caracteres_unicos = 0;
+    for(int i = 0; i < 256; ++i) {
+        if(frecuencias_array[i] > 0) {
+            num_caracteres_unicos++;
+        }
+    }
+}
+
 // Función para codificar un archivo
 void Sistema::codificar(const string &nombre_archivo) {
     //TODO: Implementación de la codificación
     //ESTO SE HACE EN LA SEGUNDA ENTREGA
+	
+	if (genoma.get_secuencias().empty()) {
+        LOG_ADVERTENCIA("Codificar", "No hay secuencias cargadas para codificar.");
+        return;
+    }
+
+    string texto_completo = "";
+    for (const Secuencia& sec : genoma.get_secuencias()) {
+        for (char base : sec.get_bases()) {
+            texto_completo += base;
+        }
+    }
+
+    if (texto_completo.empty()) {
+        LOG_ADVERTENCIA("Codificar", "Las secuencias cargadas no contienen bases.");
+        return;
+    }
+
+    long long frecuencias_array[256];
+    short num_bases_diferentes;
+    calcularFrecuencias(texto_completo, frecuencias_array, num_bases_diferentes);
+
+    ArbolHuffman arbol(texto_completo);
+
+    ofstream archivo_salida(nombre_archivo, ios::binary);
+    if (!archivo_salida.is_open()) {
+        LOG_ERROR("Codificar", "No se pudo crear el archivo " + nombre_archivo);
+        return;
+    }
+
+    archivo_salida.write(reinterpret_cast<const char*>(&num_bases_diferentes), sizeof(short));
+
+    for (int i = 0; i < 256; ++i) {
+        if (frecuencias_array[i] > 0) {
+            char caracter = static_cast<char>(i);
+            long long frecuencia = frecuencias_array[i];
+            archivo_salida.write(&caracter, sizeof(char));
+            archivo_salida.write(reinterpret_cast<const char*>(&frecuencia), sizeof(long long));
+        }
+    }
+
+    int num_secuencias = genoma.get_secuencias().size();
+    archivo_salida.write(reinterpret_cast<const char*>(&num_secuencias), sizeof(int));
+
+    string codigo_binario_total = "";
+    for (const Secuencia& sec : genoma.get_secuencias()) {
+        short tam_desc = sec.get_descripcion().length();
+        archivo_salida.write(reinterpret_cast<const char*>(&tam_desc), sizeof(short));
+        archivo_salida.write(sec.get_descripcion().c_str(), tam_desc);
+        
+        long long longitud_sec = sec.get_bases().size();
+        short ancho_linea = sec.get_ancho_linea();
+        archivo_salida.write(reinterpret_cast<const char*>(&longitud_sec), sizeof(long long));
+        archivo_salida.write(reinterpret_cast<const char*>(&ancho_linea), sizeof(short));
+
+        string bases_secuencia(sec.get_bases().begin(), sec.get_bases().end());
+        codigo_binario_total += arbol.codificar(bases_secuencia);
+    }
+
+    unsigned char byte = 0;
+    int bit_count = 0;
+    for (size_t i = 0; i < codigo_binario_total.length(); ++i) {
+        char bit = codigo_binario_total[i];
+        byte <<= 1;
+        if (bit == '1') byte |= 1;
+        bit_count++;
+        if (bit_count == 8) {
+            archivo_salida.write(reinterpret_cast<const char*>(&byte), 1);
+            byte = 0;
+            bit_count = 0;
+        }
+    }
+    if (bit_count > 0) {
+        byte <<= (8 - bit_count);
+        archivo_salida.write(reinterpret_cast<const char*>(&byte), 1);
+    }
+
+    archivo_salida.close();
+    LOG_EXITO("Codificar", "Secuencias codificadas y guardadas en " + nombre_archivo);
+	
 }
 
 // Función para decodificar un archivo
 void Sistema::decodificar(const string &nombre_archivo) {
     //TODO: Implementación de la decodificación
     //ESTO SE HACE EN LA SEGUNDA ENTREGA
+	
+	ifstream archivo_entrada(nombre_archivo, ios::binary);
+    if (!archivo_entrada.is_open()) {
+        LOG_ERROR("Decodificar", "No se puede abrir el archivo " + nombre_archivo);
+        return;
+    }
+
+    genoma.clear_secuencias();
+
+    short num_bases_diferentes;
+    archivo_entrada.read(reinterpret_cast<char*>(&num_bases_diferentes), sizeof(short));
+    if (archivo_entrada.gcount() != sizeof(short)) {
+        LOG_ERROR("Decodificar", "Archivo corrupto o formato invalido.");
+        return;
+    }
+
+    string texto_reconstruido = "";
+    for (short i = 0; i < num_bases_diferentes; ++i) {
+        char caracter;
+        long long frecuencia;
+        archivo_entrada.read(&caracter, sizeof(char));
+        archivo_entrada.read(reinterpret_cast<char*>(&frecuencia), sizeof(long long));
+        for(long long j = 0; j < frecuencia; ++j) texto_reconstruido += caracter;
+    }
+
+    if (texto_reconstruido.empty()) {
+        LOG_EXITO("Decodificar", "El archivo no contenia secuencias de bases, cargado correctamente.");
+        archivo_entrada.close();
+        return;
+    }
+    ArbolHuffman arbol(texto_reconstruido);
+
+    int num_secuencias;
+    archivo_entrada.read(reinterpret_cast<char*>(&num_secuencias), sizeof(int));
+    vector<Secuencia> secuencias_temporales;
+    vector<long long> longitudes;
+
+    for (int i = 0; i < num_secuencias; ++i) {
+        Secuencia sec_temp;
+        short tam_desc;
+        archivo_entrada.read(reinterpret_cast<char*>(&tam_desc), sizeof(short));
+        string desc(tam_desc, '\0');
+        archivo_entrada.read(&desc[0], tam_desc);
+        sec_temp.set_descripcion(desc);
+
+        long long longitud_sec;
+        short ancho_linea;
+        archivo_entrada.read(reinterpret_cast<char*>(&longitud_sec), sizeof(long long));
+        archivo_entrada.read(reinterpret_cast<char*>(&ancho_linea), sizeof(short));
+        sec_temp.set_ancho_linea(ancho_linea);
+        
+        secuencias_temporales.push_back(sec_temp);
+        longitudes.push_back(longitud_sec);
+    }
+
+    string bits_str = "";
+    char byte;
+    while(archivo_entrada.read(&byte, 1)) {
+        for(int i = 7; i >= 0; --i) {
+            bits_str += ((byte >> i) & 1) ? '1' : '0';
+        }
+    }
+    
+    string bases_decodificadas = arbol.decodificar(bits_str);
+
+    size_t offset = 0;
+    for (size_t i = 0; i < secuencias_temporales.size(); ++i) {
+        string bases_para_sec = bases_decodificadas.substr(offset, longitudes[i]);
+        vector<char> bases_vec(bases_para_sec.begin(), bases_para_sec.end());
+        secuencias_temporales[i].set_bases(bases_vec);
+        genoma.add_secuencia(secuencias_temporales[i]);
+        offset += longitudes[i];
+    }
+
+    archivo_entrada.close();
+    LOG_EXITO("Decodificar", "Secuencias decodificadas desde " + nombre_archivo + " y cargadas en memoria.");
+	
 }
 
 // Devuelve cuántos parámetros reales hay después del comando.
@@ -459,4 +635,5 @@ void Sistema::iniciarConsola() {
     inicializar();
     bienvenida();
     procesarComandos();
+
 }
