@@ -134,7 +134,7 @@ std::string ArbolHuffman::decodificar(std::string textoCodificado) {
             nodoActual = nodoActual->hijoDer;
         }
 
-        // Si llega a una hoja, caractere emcontrado
+        // Si llega a una hoja, carácter encontrado
         if (nodoActual->esHoja()) {
             textoDecodificado += nodoActual->dato;
             nodoActual = this->raiz; // Volvemos a la raiz para el siguiente caracter
