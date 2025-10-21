@@ -13,7 +13,7 @@ private:
     std::vector<char> caracteres;
     std::vector<std::string> codigos;
 
-    // Metodos privados de ayuda
+    // Métodos privados de ayuda
     void generarCodigosRecursivo(NodoHuffman* nodo, std::string codigoActual);
     void destruirRecursivo(NodoHuffman* nodo);
     std::string obtenerCodigo(char c);
