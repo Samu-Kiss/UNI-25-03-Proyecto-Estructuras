@@ -208,9 +208,6 @@ void Sistema::calcularFrecuencias(const std::string &texto, long long (&frecuenc
 
 // Función para codificar un archivo
 void Sistema::codificar(const string &nombre_archivo) {
-    //TODO: Implementación de la codificación
-    //ESTO SE HACE EN LA SEGUNDA ENTREGA
-	
 	if (genoma.get_secuencias().empty()) {
         LOG_ADVERTENCIA("Codificar", "No hay secuencias cargadas para codificar.");
         return;
@@ -293,10 +290,7 @@ void Sistema::codificar(const string &nombre_archivo) {
 }
 
 // Función para decodificar un archivo
-void Sistema::decodificar(const string &nombre_archivo) {
-    //TODO: Implementación de la decodificación
-    //ESTO SE HACE EN LA SEGUNDA ENTREGA
-	
+void Sistema::decodificar(const string &nombre_archivo) {	
 	ifstream archivo_entrada(nombre_archivo, ios::binary);
     if (!archivo_entrada.is_open()) {
         LOG_ERROR("Decodificar", "No se puede abrir el archivo " + nombre_archivo);
