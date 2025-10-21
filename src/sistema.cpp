@@ -187,7 +187,7 @@ bool Sistema::cargar(const string &nombre_archivo) {
     return true;
 }
 
-// Funacion para calcular precuencias
+// Función para calcular frecuencias
 void Sistema::calcularFrecuencias(const std::string &texto, long long (&frecuencias_array)[256], short &num_caracteres_unicos) {
     for(int i = 0; i < 256; ++i) {
         frecuencias_array[i] = 0;
