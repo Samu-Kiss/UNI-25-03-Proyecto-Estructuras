@@ -9,7 +9,7 @@ class ArbolHuffman {
 private:
     NodoHuffman* raiz;
 
-    // Vectore para almacenar codigos
+    // Vectores para almacenar códigos
     std::vector<char> caracteres;
     std::vector<std::string> codigos;
 
