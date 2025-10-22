@@ -3,6 +3,9 @@
 
 #include "genoma.h"
 #include <string>
+#include "ArbolHuffman.h"
+#include <vector>
+#include <cstdint>
 
 class Sistema {
 private:
@@ -26,6 +29,7 @@ private:
     // Funciones de ayuda
     int numParams(const std::string &input);
     bool parsePositiveInt(const std::string &s, int &out);
+    void calcularFrecuencias(const std::string& texto, std::uint64_t (&frecuencias_array)[256], std::uint16_t& num_caracteres_unicos);
 
 public:
     // Constructor
