@@ -9,6 +9,7 @@
 #include <vector>
 #include <cstdint>
 #include <limits>
+#include <algorithm>
 
 #ifdef _WIN32
 #include <windows.h>
