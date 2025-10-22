@@ -11,8 +11,11 @@
 #include <limits>
 #include <algorithm>
 
-#ifdef _WIN32
-#include <windows.h>
+#ifdef _WIN32 
+#ifndef NOMINMAX 
+#define NOMINMAX 
+#endif 
+#include <windows.h> 
 #endif
 
 using namespace std;
