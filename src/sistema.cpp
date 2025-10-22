@@ -10,8 +10,9 @@
 #include <cstdint>
 #include <limits>
 #include <algorithm>
+#include <new>
 
-#ifdef _WIN32 
+#ifdef _WIN32   
 #include <windows.h> 
 #endif
 
@@ -327,143 +328,154 @@ void Sistema::decodificar(const string &nombre_archivo) {
         return;
     }
 
-    genoma.clear_secuencias();
+    try {
+        genoma.clear_secuencias();
 
-    std::uint16_t num_bases_diferentes = 0;
-    archivo_entrada.read(reinterpret_cast<char *>(&num_bases_diferentes), sizeof(std::uint16_t));
-    if (archivo_entrada.gcount() != sizeof(std::uint16_t)) {
-        LOG_ERROR("Decodificar", "Archivo corrupto o formato invalido (cabecera de bases).");
-        return;
-    }
-
-    string texto_reconstruido = "";
-    for (std::uint16_t i = 0; i < num_bases_diferentes; ++i) {
-        std::uint8_t caracter = 0;
-        std::uint64_t frecuencia = 0;
-        archivo_entrada.read(reinterpret_cast<char *>(&caracter), sizeof(std::uint8_t));
-        if (archivo_entrada.gcount() != sizeof(std::uint8_t)) {
-            LOG_ERROR("Decodificar", "Archivo corrupto al leer el código de base.");
-            return;
-        }
-        archivo_entrada.read(reinterpret_cast<char *>(&frecuencia), sizeof(std::uint64_t));
-        if (archivo_entrada.gcount() != sizeof(std::uint64_t)) {
-            LOG_ERROR("Decodificar", "Archivo corrupto o formato invalido (frecuencia de base).");
-            return;
-        }
-        if (frecuencia > static_cast<std::uint64_t>((std::numeric_limits<std::size_t>::max)() - texto_reconstruido.size())) {
-            LOG_ERROR("Decodificar", "Las frecuencias exceden la capacidad de reconstrucción en memoria.");
-            return;
-        }
-        texto_reconstruido.append(static_cast<std::size_t>(frecuencia), static_cast<char>(caracter));
-    }
-
-    if (texto_reconstruido.empty()) {
-        LOG_EXITO("Decodificar", "El archivo no contenia secuencias de bases, cargado correctamente.");
-        archivo_entrada.close();
-        return;
-    }
-
-    ArbolHuffman arbol(texto_reconstruido);
-    NodoHuffman *raiz = arbol.obtenerRaiz();
-    if (raiz == nullptr) {
-        LOG_ERROR("Decodificar", "No se pudo reconstruir el árbol de Huffman.");
-        return;
-    }
-    const bool arbolConUnSimbolo = raiz->esHoja();
-    const char simboloUnico = arbolConUnSimbolo ? raiz->dato : '\0';
-
-    std::uint32_t num_secuencias = 0;
-    archivo_entrada.read(reinterpret_cast<char *>(&num_secuencias), sizeof(std::uint32_t));
-    if (archivo_entrada.gcount() != sizeof(std::uint32_t)) {
-        LOG_ERROR("Decodificar", "Archivo corrupto o formato invalido (cantidad de secuencias).");
-        return;
-    }
-
-    for (std::uint32_t i = 0; i < num_secuencias; ++i) {
-        Secuencia sec_temp;
-
-        std::uint16_t tam_desc = 0;
-        archivo_entrada.read(reinterpret_cast<char *>(&tam_desc), sizeof(std::uint16_t));
+        std::uint16_t num_bases_diferentes = 0;
+        archivo_entrada.read(reinterpret_cast<char *>(&num_bases_diferentes), sizeof(std::uint16_t));
         if (archivo_entrada.gcount() != sizeof(std::uint16_t)) {
-            LOG_ERROR("Decodificar", "Archivo corrupto al leer el tamaño de la descripcion.");
+            LOG_ERROR("Decodificar", "Archivo corrupto o formato invalido (cabecera de bases).");
             return;
         }
 
-        string desc(tam_desc, '\0');
-        if (tam_desc > 0) {
-            archivo_entrada.read(&desc[0], tam_desc);
-            if (archivo_entrada.gcount() != tam_desc) {
-                LOG_ERROR("Decodificar", "Archivo corrupto al leer la descripcion de la secuencia.");
+        string texto_reconstruido = "";
+        for (std::uint16_t i = 0; i < num_bases_diferentes; ++i) {
+            std::uint8_t caracter = 0;
+            std::uint64_t frecuencia = 0;
+            archivo_entrada.read(reinterpret_cast<char *>(&caracter), sizeof(std::uint8_t));
+            if (archivo_entrada.gcount() != sizeof(std::uint8_t)) {
+                LOG_ERROR("Decodificar", "Archivo corrupto al leer el código de base.");
                 return;
             }
+            archivo_entrada.read(reinterpret_cast<char *>(&frecuencia), sizeof(std::uint64_t));
+            if (archivo_entrada.gcount() != sizeof(std::uint64_t)) {
+                LOG_ERROR("Decodificar", "Archivo corrupto o formato invalido (frecuencia de base).");
+                return;
+            }
+            if (frecuencia > static_cast<std::uint64_t>((std::numeric_limits<std::size_t>::max)() - texto_reconstruido.size())) {
+                LOG_ERROR("Decodificar", "Las frecuencias exceden la capacidad de reconstrucción en memoria.");
+                return;
+            }
+            texto_reconstruido.append(static_cast<std::size_t>(frecuencia), static_cast<char>(caracter));
         }
-        sec_temp.set_descripcion(desc);
 
-        std::uint64_t longitud_sec = 0;
-        archivo_entrada.read(reinterpret_cast<char *>(&longitud_sec), sizeof(std::uint64_t));
-        if (archivo_entrada.gcount() != sizeof(std::uint64_t)) {
-            LOG_ERROR("Decodificar", "Archivo corrupto al leer la longitud de la secuencia.");
+        if (texto_reconstruido.empty()) {
+            LOG_EXITO("Decodificar", "El archivo no contenia secuencias de bases, cargado correctamente.");
+            archivo_entrada.close();
             return;
         }
 
-        std::uint16_t ancho_linea = 0;
-        archivo_entrada.read(reinterpret_cast<char *>(&ancho_linea), sizeof(std::uint16_t));
-        if (archivo_entrada.gcount() != sizeof(std::uint16_t)) {
-            LOG_ERROR("Decodificar", "Archivo corrupto al leer el ancho de línea.");
+        ArbolHuffman arbol(texto_reconstruido);
+        NodoHuffman *raiz = arbol.obtenerRaiz();
+        if (raiz == nullptr) {
+            LOG_ERROR("Decodificar", "No se pudo reconstruir el árbol de Huffman.");
             return;
         }
-        sec_temp.set_ancho_linea(static_cast<int>(ancho_linea));
+        const bool arbolConUnSimbolo = raiz->esHoja();
+        const char simboloUnico = arbolConUnSimbolo ? raiz->dato : '\0';
 
-        if (longitud_sec > (std::numeric_limits<std::size_t>::max)()) {
-            LOG_ERROR("Decodificar", "La longitud de la secuencia es demasiado grande para cargarla en memoria.");
+        std::uint32_t num_secuencias = 0;
+        archivo_entrada.read(reinterpret_cast<char *>(&num_secuencias), sizeof(std::uint32_t));
+        if (archivo_entrada.gcount() != sizeof(std::uint32_t)) {
+            LOG_ERROR("Decodificar", "Archivo corrupto o formato invalido (cantidad de secuencias).");
             return;
         }
 
-        std::vector<char> bases_vec;
-        bases_vec.reserve(static_cast<std::size_t>(longitud_sec));
+        for (std::uint32_t i = 0; i < num_secuencias; ++i) {
+            Secuencia sec_temp;
 
-        if (longitud_sec > 0 && arbolConUnSimbolo) {
-            bases_vec.assign(static_cast<std::size_t>(longitud_sec), simboloUnico);
-        } else if (longitud_sec > 0) {
-            std::uint8_t byte = 0;
-            int bits_consumidos = 8;
-            NodoHuffman *nodoActual = raiz;
-            std::uint64_t decodificados = 0;
-
-            while (decodificados < longitud_sec) {
-                if (bits_consumidos == 8) {
-                    if (!archivo_entrada.read(reinterpret_cast<char *>(&byte), sizeof(std::uint8_t))) {
-                        LOG_ERROR("Decodificar", "Datos insuficientes al leer el código binario de la secuencia.");
-                        return;
-                    }
-                    bits_consumidos = 0;
-                }
-
-                bool bit = ((byte >> (7 - bits_consumidos)) & 0x01u) != 0;
-                ++bits_consumidos;
-
-                nodoActual = bit ? nodoActual->hijoDer : nodoActual->hijoIzq;
-                if (nodoActual == nullptr) {
-                    LOG_ERROR("Decodificar", "El código binario no es válido para el árbol de Huffman reconstruido.");
-                    return;
-                }
-
-                if (nodoActual->esHoja()) {
-                    bases_vec.push_back(nodoActual->dato);
-                    nodoActual = raiz;
-                    ++decodificados;
-                }
+            std::uint16_t tam_desc = 0;
+            archivo_entrada.read(reinterpret_cast<char *>(&tam_desc), sizeof(std::uint16_t));
+            if (archivo_entrada.gcount() != sizeof(std::uint16_t)) {
+                LOG_ERROR("Decodificar", "Archivo corrupto al leer el tamaño de la descripcion.");
+                return;
             }
 
-            bits_consumidos = 8; // Descartar el padding restante del último byte.
+            string desc(tam_desc, '\0');
+            if (tam_desc > 0) {
+                archivo_entrada.read(&desc[0], tam_desc);
+                if (archivo_entrada.gcount() != tam_desc) {
+                    LOG_ERROR("Decodificar", "Archivo corrupto al leer la descripcion de la secuencia.");
+                    return;
+                }
+            }
+            sec_temp.set_descripcion(desc);
+
+            std::uint64_t longitud_sec = 0;
+            archivo_entrada.read(reinterpret_cast<char *>(&longitud_sec), sizeof(std::uint64_t));
+            if (archivo_entrada.gcount() != sizeof(std::uint64_t)) {
+                LOG_ERROR("Decodificar", "Archivo corrupto al leer la longitud de la secuencia.");
+                return;
+            }
+
+            std::uint16_t ancho_linea = 0;
+            archivo_entrada.read(reinterpret_cast<char *>(&ancho_linea), sizeof(std::uint16_t));
+            if (archivo_entrada.gcount() != sizeof(std::uint16_t)) {
+                LOG_ERROR("Decodificar", "Archivo corrupto al leer el ancho de línea.");
+                return;
+            }
+            sec_temp.set_ancho_linea(static_cast<int>(ancho_linea));
+
+            if (longitud_sec > (std::numeric_limits<std::size_t>::max)()) {
+                LOG_ERROR("Decodificar", "La longitud de la secuencia es demasiado grande para cargarla en memoria.");
+                return;
+            }
+
+            std::vector<char> bases_vec;
+            const std::size_t max_reservable = bases_vec.max_size();
+            if (longitud_sec > max_reservable) {
+                LOG_ERROR("Decodificar", "La longitud declarada de la secuencia excede la capacidad de almacenamiento.");
+                return;
+            }
+            bases_vec.reserve(static_cast<std::size_t>(longitud_sec));
+
+            if (longitud_sec > 0 && arbolConUnSimbolo) {
+                bases_vec.assign(static_cast<std::size_t>(longitud_sec), simboloUnico);
+            } else if (longitud_sec > 0) {
+                std::uint8_t byte = 0;
+                int bits_consumidos = 8;
+                NodoHuffman *nodoActual = raiz;
+                std::uint64_t decodificados = 0;
+
+                while (decodificados < longitud_sec) {
+                    if (bits_consumidos == 8) {
+                        if (!archivo_entrada.read(reinterpret_cast<char *>(&byte), sizeof(std::uint8_t))) {
+                            LOG_ERROR("Decodificar", "Datos insuficientes al leer el código binario de la secuencia.");
+                            return;
+                        }
+                        bits_consumidos = 0;
+                    }
+
+                    bool bit = ((byte >> (7 - bits_consumidos)) & 0x01u) != 0;
+                    ++bits_consumidos;
+
+                    nodoActual = bit ? nodoActual->hijoDer : nodoActual->hijoIzq;
+                    if (nodoActual == nullptr) {
+                        LOG_ERROR("Decodificar", "El código binario no es válido para el árbol de Huffman reconstruido.");
+                        return;
+                    }
+
+                    if (nodoActual->esHoja()) {
+                        bases_vec.push_back(nodoActual->dato);
+                        nodoActual = raiz;
+                        ++decodificados;
+                    }
+                }
+
+                bits_consumidos = 8; // Descartar el padding restante del último byte.
+            }
+
+            sec_temp.set_bases(bases_vec);
+            genoma.add_secuencia(sec_temp);
         }
 
-        sec_temp.set_bases(bases_vec);
-        genoma.add_secuencia(sec_temp);
+        archivo_entrada.close();
+        LOG_EXITO("Decodificar", "Secuencias decodificadas desde " + nombre_archivo + " y cargadas en memoria.");
+    } catch (const std::bad_alloc &) {
+        archivo_entrada.close();
+        genoma.clear_secuencias();
+        LOG_ERROR("Decodificar", "Memoria insuficiente al decodificar. Es probable que el archivo esté corrupto o manipulado.");
     }
-
-    archivo_entrada.close();
-    LOG_EXITO("Decodificar", "Secuencias decodificadas desde " + nombre_archivo + " y cargadas en memoria.");
 }
 
 // Devuelve cuántos parámetros reales hay después del comando.
