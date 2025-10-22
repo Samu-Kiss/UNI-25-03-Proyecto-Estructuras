@@ -29,6 +29,7 @@ public:
     void imprimirCodigos();
     std::string codificar(std::string texto);
     std::string decodificar(std::string textoCodificado);
+    NodoHuffman* obtenerRaiz();
 };
 
 #endif // __ARBOLHUFFMAN_H__

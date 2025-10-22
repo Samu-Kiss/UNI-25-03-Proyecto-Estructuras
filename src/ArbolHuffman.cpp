@@ -142,3 +142,7 @@ std::string ArbolHuffman::decodificar(std::string textoCodificado) {
     }
     return textoDecodificado;
 }
+
+NodoHuffman* ArbolHuffman::obtenerRaiz() {
+    return this->raiz;
+}
