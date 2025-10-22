@@ -12,9 +12,6 @@
 #include <algorithm>
 
 #ifdef _WIN32 
-#ifndef NOMINMAX 
-#define NOMINMAX 
-#endif 
 #include <windows.h> 
 #endif
 
@@ -260,7 +257,7 @@ void Sistema::codificar(const string &nombre_archivo) {
     }
 
     const auto totalSecuencias = genoma.get_secuencias().size();
-    if (totalSecuencias > std::numeric_limits<std::uint32_t>::max()) {
+    if (totalSecuencias > (std::numeric_limits<std::uint32_t>::max)()) {
         LOG_ERROR("Codificar", "Demasiadas secuencias para codificar en un archivo.");
         return;
     }
@@ -269,7 +266,7 @@ void Sistema::codificar(const string &nombre_archivo) {
 
     for (const Secuencia &sec : genoma.get_secuencias()) {
         const string &descripcion = sec.get_descripcion();
-        if (descripcion.length() > std::numeric_limits<std::uint16_t>::max()) {
+        if (descripcion.length() > (std::numeric_limits<std::uint16_t>::max)()) {
             LOG_ERROR("Codificar", "La descripción de la secuencia es demasiado larga para codificarse.");
             return;
         }
@@ -281,7 +278,7 @@ void Sistema::codificar(const string &nombre_archivo) {
 
         const auto &bases = sec.get_bases();
         std::uint64_t longitud_sec = static_cast<std::uint64_t>(bases.size());
-        if (sec.get_ancho_linea() < 0 || sec.get_ancho_linea() > std::numeric_limits<std::uint16_t>::max()) {
+        if (sec.get_ancho_linea() < 0 || sec.get_ancho_linea() > (std::numeric_limits<std::uint16_t>::max)()) {
             LOG_ERROR("Codificar", "Valor de ancho de línea fuera de rango para la secuencia '" + descripcion + "'.");
             return;
         }
@@ -353,7 +350,7 @@ void Sistema::decodificar(const string &nombre_archivo) {
             LOG_ERROR("Decodificar", "Archivo corrupto o formato invalido (frecuencia de base).");
             return;
         }
-        if (frecuencia > static_cast<std::uint64_t>(std::numeric_limits<std::size_t>::max() - texto_reconstruido.size())) {
+        if (frecuencia > static_cast<std::uint64_t>((std::numeric_limits<std::size_t>::max)() - texto_reconstruido.size())) {
             LOG_ERROR("Decodificar", "Las frecuencias exceden la capacidad de reconstrucción en memoria.");
             return;
         }
@@ -417,7 +414,7 @@ void Sistema::decodificar(const string &nombre_archivo) {
         }
         sec_temp.set_ancho_linea(static_cast<int>(ancho_linea));
 
-        if (longitud_sec > std::numeric_limits<std::size_t>::max()) {
+        if (longitud_sec > (std::numeric_limits<std::size_t>::max)()) {
             LOG_ERROR("Decodificar", "La longitud de la secuencia es demasiado grande para cargarla en memoria.");
             return;
         }
