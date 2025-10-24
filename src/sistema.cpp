@@ -257,7 +257,7 @@ void Sistema::codificar(const string &nombre_archivo) {
         }
     }
 
-    const auto totalSecuencias = genoma.get_secuencias().size();
+    const std::size_t totalSecuencias = genoma.get_secuencias().size();
     if (totalSecuencias > (std::numeric_limits<std::uint32_t>::max)()) {
         LOG_ERROR("Codificar", "Demasiadas secuencias para codificar en un archivo.");
         return;
@@ -277,7 +277,7 @@ void Sistema::codificar(const string &nombre_archivo) {
             archivo_salida.write(descripcion.c_str(), tam_desc);
         }
 
-        const auto &bases = sec.get_bases();
+        const std::vector<char> &bases = sec.get_bases();
         std::uint64_t longitud_sec = static_cast<std::uint64_t>(bases.size());
         if (sec.get_ancho_linea() < 0 || sec.get_ancho_linea() > (std::numeric_limits<std::uint16_t>::max)()) {
             LOG_ERROR("Codificar", "Valor de ancho de línea fuera de rango para la secuencia '" + descripcion + "'.");
