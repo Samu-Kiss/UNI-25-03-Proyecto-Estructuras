@@ -2,6 +2,7 @@
 #include "./termcolor.hpp"
 #include "./secuencia.h"
 #include "./genoma.h"
+#include "./grafo.h"
 #include "./log.hpp"
 #include <iostream>
 #include <vector>
@@ -10,6 +11,9 @@
 #include <algorithm>
 #include <set>
 #include <map>
+#include <cmath>
+#include <stack>
+#include <iomanip>
 
 using namespace std;
 
@@ -283,14 +287,219 @@ void Genoma::Enmascarar(const char *subsecuencia) {
     }
 }
 
-//RutaMasCorta(descripcion_secuencia, i, j, x, y) -> void
+// Funcion auxiliar frmula de peso
+double calcularPesoBases(char a, char b) {
+    // Peso = 1 / (1 + |ASCII_a - ASCII_b|)
+    double diff = std::abs(static_cast<int>(a) - static_cast<int>(b)); // abs valor absoluto
+    return 1.0 / (1.0 + diff);
+}
+
+//Metodo para construir el grafo
+Grafo Genoma::construirGrafo(const std::vector<char>& bases, int ancho) const {
+    int total_nodos = static_cast<int>(bases.size());
+    Grafo grafo(total_nodos);
+
+    for (int u = 0; u < total_nodos; ++u) {
+        int fila_u = u / ancho;
+        int col_u = u % ancho;
+
+        //Arriba, Abajo, Izquierda, Derecha
+        int dr[] = {-1, 1, 0, 0};
+        int dc[] = {0, 0, -1, 1};
+
+        for (int k = 0; k < 4; ++k) {
+            int fila_v = fila_u + dr[k];
+            int col_v = col_u + dc[k];
+            int v = fila_v * ancho + col_v;
+
+            //Validar limites de matriz y vector
+            if (fila_v >= 0 && col_v >= 0 && col_v < ancho && v < total_nodos) {
+                double peso = calcularPesoBases(bases[u], bases[v]);
+                grafo.agregarArista(u, v, peso);
+            }
+        }
+    }
+    return grafo;
+}
+
 void Genoma::RutaMasCorta(const char *descripcion_secuencia, int i, int j, int x, int y) {
-    //TODO: Implementación de la ruta más corta
-    //ESTO SE HACE EN LA SEGUNDA ENTREGA
+    //Buscar secuencia
+    std::vector<Secuencia>& listaSec = get_secuencias();
+    Secuencia* secuenciaObj = NULL;
+
+    for (size_t k = 0; k < listaSec.size(); ++k) {
+        if (listaSec[k].get_descripcion() == descripcion_secuencia) {
+            secuenciaObj = &listaSec[k];
+            break;
+        }
+    }
+
+    if (secuenciaObj == NULL) {
+        LOG_ERROR("RutaMasCorta", string("La secuencia ") + descripcion_secuencia + " no existe.");
+        return;
+    }
+
+    //Datos secuencia
+    const vector<char>& bases = secuenciaObj->get_bases();
+    int ancho = secuenciaObj->get_ancho_linea();
+    int total_nodos = static_cast<int>(bases.size());
+
+    // Convertir coordenadas matriz(fila, col) a vector (ID de nodo)
+    // ID = fila * ancho + columna
+    int nodoOrigen = i * ancho + j;
+    int nodoDestino = x * ancho + y;
+
+
+    if (nodoOrigen < 0 || nodoOrigen >= total_nodos || j < 0 || j >= ancho) {
+        LOG_ERROR("RutaMasCorta", string("La base en la posición [") + to_string(i) + "," + to_string(j) + "] no existe.");
+        return;
+    }
+    if (nodoDestino < 0 || nodoDestino >= total_nodos || y < 0 || y >= ancho) {
+        LOG_ERROR("RutaMasCorta", string("La base en la posición [") + to_string(x) + "," + to_string(y) + "] no existe.");
+        return;
+    }
+
+    //Instanciar el TAD Grafo
+    Grafo grafo = construirGrafo(bases, ancho);
+	
+    //Algoritmo de Dijkstra
+    ResultadoDijkstra res = grafo.dijkstra(nodoOrigen);
+
+    //Verificar si se encontro ruta
+    if (res.distancias[nodoDestino] == numeric_limits<double>::infinity()) {
+        LOG_ADVERTENCIA("RutaMasCorta", "No hay ruta posible entre los nodos seleccionados.");
+        return;
+    }
+
+    //Reconstruccio del camino
+    stack<int> caminoPila;
+    int actual = nodoDestino;
+    while (actual != -1) {
+        caminoPila.push(actual);
+        actual = res.previos[actual];
+        
+        if (actual == nodoDestino) break; 
+    }
+
+    //Imprimir salida
+    cout << termcolor::green << "\t[RutaMasCorta/Exito]: " << termcolor::reset << endl;
+    cout << "Para la secuencia " << descripcion_secuencia << ", la ruta más corta entre ";
+    cout << "la base " << bases[nodoOrigen] << " en [" << i << "," << j << "] y ";
+    cout << "la base " << bases[nodoDestino] << " en [" << x << "," << y << "] es:" << endl;
+    
+    cout << "\t";
+    while (!caminoPila.empty()) {
+        int nodo = caminoPila.top();
+        caminoPila.pop();
+
+        int r = nodo / ancho;
+        int c = nodo % ancho;
+        
+        cout << bases[nodo] << "[" << r << "," << c << "]";
+        
+        if (!caminoPila.empty()) {
+            cout << " -> ";
+        }
+    }
+    cout << endl;
+
+    // Mostrar costo total
+    cout << fixed << setprecision(4); //4 decimales (iomanip)
+    cout << "El costo total de la ruta es: " << res.distancias[nodoDestino] << endl;
 }
 
 //BaseRemota (descripcion_secuencia, i, j) -> void
 void Genoma::BaseRemota(const char *descripcion_secuencia, int i, int j) {
-    //TODO: Implementación de la base remota
-    //ESTO SE HACE EN LA SEGUNDA ENTREGA
+    //Buscar secuencia
+    Secuencia* secuenciaObj = nullptr;
+    std::vector<Secuencia>& lista = get_secuencias();
+    for (size_t k = 0; k < lista.size(); ++k) {
+        if (lista[k].get_descripcion() == descripcion_secuencia) {
+            secuenciaObj = &lista[k];
+            break;
+        }
+    }
+
+    if (secuenciaObj == nullptr) {
+        LOG_ERROR("BaseRemota", string("La secuencia ") + descripcion_secuencia + " no existe.");
+        return;
+    }
+
+    const vector<char>& bases = secuenciaObj->get_bases();
+    int ancho = secuenciaObj->get_ancho_linea();
+    int total_nodos = static_cast<int>(bases.size());
+    int nodoOrigen = i * ancho + j;
+
+    // Validacio origen
+    if (nodoOrigen < 0 || nodoOrigen >= total_nodos || j < 0 || j >= ancho) {
+        LOG_ERROR("BaseRemota", "Posición de base inválida.");
+        return;
+    }
+
+    char baseBuscada = bases[nodoOrigen];
+    
+    //Pitaoras Buscar la base mas lejana
+    int nodoRemoto = -1;
+    double maxDistanciaEuclidiana = -1.0;
+    int remotoI = -1, remotoJ = -1;
+
+    for (int k = 0; k < total_nodos; ++k) {
+        if (bases[k] == baseBuscada) {
+            int r = k / ancho;
+            int c = k % ancho;
+
+            // Distancia Euclidiana sqrt((x2-x1)^2 + (y2-y1)^2)
+            double distancia = std::sqrt(std::pow(r - i, 2) + std::pow(c - j, 2));
+
+            if (distancia > maxDistanciaEuclidiana) {
+                maxDistanciaEuclidiana = distancia;
+                nodoRemoto = k;
+                remotoI = r;
+                remotoJ = c;
+            }
+        }
+    }
+
+    if (nodoRemoto == -1 || nodoRemoto == nodoOrigen) {
+        LOG_ADVERTENCIA("BaseRemota", "No se encontró otra base idéntica lejana (o la única es la misma).");
+        //Aqui no vale ruta que cueste 0 pero tambien podria valer
+        // return; 
+    }
+
+    //Construir Grafo y Dijkstra
+    Grafo grafo = construirGrafo(bases, ancho);
+    ResultadoDijkstra res = grafo.dijkstra(nodoOrigen);
+
+    // Verificar si hay camino
+    if (res.distancias[nodoRemoto] == numeric_limits<double>::infinity()) {
+        LOG_ADVERTENCIA("BaseRemota", "La base remota existe pero no hay un camino válido (grafo disconexo).");
+        return;
+    }
+
+    // Reconstruir camino
+    stack<int> camino;
+    int curr = nodoRemoto;
+    while (curr != -1) {
+        camino.push(curr);
+        curr = res.previos[curr];
+    }
+
+    //Salida
+    cout << termcolor::green << "\t[BaseRemota/Exito]: " << termcolor::reset << endl;
+    cout << "Para la secuencia " << descripcion_secuencia << ", la base remota está ubicada en [" << remotoI << "," << remotoJ << "], ";
+    cout << "y la ruta entre la base en [" << i << "," << j << "] y la base remota en [" << remotoI << "," << remotoJ << "] es:" << endl;
+
+    cout << "\t";
+    while (!camino.empty()) {
+        int idx = camino.top();
+        camino.pop();
+        int r = idx / ancho;
+        int c = idx % ancho;
+        cout << bases[idx] << "[" << r << "," << c << "]";
+        if (!camino.empty()) cout << " -> ";
+    }
+    cout << endl;
+
+    cout << fixed << setprecision(4);
+    cout << "El costo total de la ruta es: " << res.distancias[nodoRemoto] << endl;
 }

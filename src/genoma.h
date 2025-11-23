@@ -3,6 +3,7 @@
 #define GENOMA_H
 
 #include "./secuencia.h"
+#include "./grafo.h"
 
 class Genoma {
 private:
@@ -31,6 +32,9 @@ public:
     void Enmascarar(const char* subsecuencia);
     void RutaMasCorta(const char* descripcion_secuencia, int i, int j, int x, int y);
     void BaseRemota(const char* descripcion_secuencia, int i, int j);
+	
+	// Metodo costruiro grafo
+    Grafo construirGrafo(const std::vector<char>& bases, int ancho) const;
 };
 
 #endif // GENOMA_H
