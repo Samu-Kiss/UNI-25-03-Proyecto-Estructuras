@@ -13,6 +13,7 @@
 
 #include "log.hpp"
 #include "termcolor.hpp"  // Librería para colores en la consola
+#include "grafo.h"
 
 
 #ifdef _WIN32
@@ -141,6 +142,17 @@ bool Sistema::cargar(const string& nombre_archivo) {
                               nueva_secuencia.get_descripcion() +
                               "' no contiene bases. Se descarta la secuencia.");
         } else {
+          // Crear grafo asociado a la secuencia mientras se carga (debug)
+          LOG_INFO("Cargar",
+                   string("Creando grafo para secuencia: ") +
+                       nueva_secuencia.get_descripcion());
+          Grafo<int, float> g;
+          nueva_secuencia.llenarGrafo(g);
+          LOG_INFO("Cargar",
+                   string("Grafo creado: ") +
+                       to_string(g.cantVertices()) + " vertices, " +
+                       to_string(g.cantAristas()) + " aristas");
+
           genoma.add_secuencia(nueva_secuencia);
           ++countAdded;
           LOG_EXITO("Cargar", string("Secuencia añadida: ") +
@@ -176,6 +188,17 @@ bool Sistema::cargar(const string& nombre_archivo) {
                               nueva_secuencia.get_descripcion() +
                               "' no contiene bases. Se descarta la secuencia.");
         } else {
+          // Crear grafo asociado a la secuencia mientras se carga (debug)
+          LOG_INFO("Cargar",
+                   string("Creando grafo para secuencia: ") +
+                       nueva_secuencia.get_descripcion());
+          Grafo<int, float> g;
+          nueva_secuencia.llenarGrafo(g);
+          LOG_INFO("Cargar",
+                   string("Grafo creado: ") +
+                       to_string(g.cantVertices()) + " vertices, " +
+                       to_string(g.cantAristas()) + " aristas");
+
           genoma.add_secuencia(nueva_secuencia);
           ++countAdded;
           LOG_EXITO("Cargar", string("Secuencia añadida: ") +
@@ -206,16 +229,27 @@ bool Sistema::cargar(const string& nombre_archivo) {
           string("Se encontró una secuencia sin descripción en el archivo ") +
               nombre_archivo + ". Se descarta la secuencia.");
     } else if (!nueva_secuencia.get_descripcion().empty() &&
-               nueva_secuencia.get_bases().empty()) {
+           nueva_secuencia.get_bases().empty()) {
       LOG_ADVERTENCIA("Cargar",
-                      string("La secuencia '") +
-                          nueva_secuencia.get_descripcion() +
-                          "' no contiene bases. Se descarta la secuencia.");
+              string("La secuencia '") +
+                nueva_secuencia.get_descripcion() +
+                "' no contiene bases. Se descarta la secuencia.");
     } else {
+      // Crear grafo asociado a la secuencia mientras se carga (debug)
+      LOG_INFO("Cargar",
+           string("Creando grafo para secuencia: ") +
+             nueva_secuencia.get_descripcion());
+      Grafo<int, float> g;
+      nueva_secuencia.llenarGrafo(g);
+      LOG_INFO("Cargar",
+           string("Grafo creado: ") +
+             to_string(g.cantVertices()) + " vertices, " +
+             to_string(g.cantAristas()) + " aristas");
+
       genoma.add_secuencia(nueva_secuencia);
       ++countAdded;
       LOG_EXITO("Cargar", string("Secuencia añadida: ") +
-                              nueva_secuencia.get_descripcion());
+                  nueva_secuencia.get_descripcion());
     }
   }
 

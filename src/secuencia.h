@@ -4,6 +4,7 @@
 
 #include <string>
 #include <vector>
+#include "grafo.h"
 
 using std::string;
 using std::vector;
@@ -36,6 +37,7 @@ class Secuencia {
   void add_base(char b);
   size_t bases_size() const;
   void set_base(size_t idx, char b);
+    void llenarGrafo(Grafo<int, float>& g) const;
 };
 
 #endif  // SECUENCIA_H

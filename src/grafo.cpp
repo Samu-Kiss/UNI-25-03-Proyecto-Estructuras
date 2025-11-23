@@ -6,7 +6,9 @@
 #include <algorithm>
 
   template <class T, class U>
-  Grafo<T,U>::Grafo(){}
+  Grafo<T,U>::Grafo(){
+    aristas = nullptr;
+  }
 
   template <class T, class U>
   void Grafo<T,U>::setVertices(std::vector<T> v){
@@ -70,10 +72,13 @@
         *(*(nmatriz + i) + (cantVertices() - 1)) = 0;
         *(*(nmatriz + (cantVertices() - 1)) + i) = 0;
       }
-      for (int i = 0; i < cantVertices() - 1; i++) {
-        delete[] *(aristas + i);
+      int prev = cantVertices() - 1; // cantidad previa de vértices
+      if (prev > 0 && aristas != nullptr) {
+        for (int i = 0; i < prev; i++) {
+          delete[] *(aristas + i);
+        }
+        delete[] aristas;
       }
-      delete[] aristas;
       aristas = nmatriz;
       res = true;
     }
@@ -208,3 +213,4 @@
   }
 
 template class Grafo<char, float>;
+template class Grafo<int, float>;
