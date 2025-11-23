@@ -500,7 +500,7 @@ bool Sistema::parsePositiveInt(const string &s, int &out) {
     }
     try {
         long v = stol(s);
-        if (v <= 0 || v > INT_MAX) return false;
+        if (v < 0 || v > INT_MAX) return false;
         out = static_cast<int>(v);
         return true;
     } catch (...) {
@@ -740,4 +740,5 @@ void Sistema::iniciarConsola() {
     procesarComandos();
 
 }
+
 
