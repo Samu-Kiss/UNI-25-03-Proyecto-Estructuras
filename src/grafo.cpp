@@ -95,3 +95,12 @@ ResultadoDijkstra Grafo::dijkstra(int nodoOrigen) {
     res.previos = prev;
     return res;
 }
+
+// Getters
+int Grafo::get_num_vertices() const {
+    return numVertices;
+}
+
+const std::vector<std::vector<double> >& Grafo::get_matriz_adyacencia() const {
+    return matrizAdyacencia;
+}

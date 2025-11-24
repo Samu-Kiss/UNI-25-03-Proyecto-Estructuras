@@ -28,6 +28,10 @@ public:
 
     // Algoritmo de Dijkstra
     ResultadoDijkstra dijkstra(int nodoOrigen);
+
+    // Getters de solo lectura para renderizado
+    int get_num_vertices() const;
+    const std::vector<std::vector<double> >& get_matriz_adyacencia() const;
 };
 
 #endif // GRAFO_H

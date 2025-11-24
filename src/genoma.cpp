@@ -5,6 +5,9 @@
 #include "./grafo.h"
 #include "./log.hpp"
 #include <iostream>
+#include "graph_renderer.h"
+
+
 #include <vector>
 #include <string>
 #include <cstring>
@@ -381,30 +384,24 @@ void Genoma::RutaMasCorta(const char *descripcion_secuencia, int i, int j, int x
         if (actual == nodoDestino) break; 
     }
 
-    //Imprimir salida
+    //Imprimir salida (usar renderer para ventana rectangular)
+    // Construir vector de nodos en orden (origen -> destino)
+    std::vector<int> path_nodes;
+    while (!caminoPila.empty()) {
+        path_nodes.push_back(caminoPila.top());
+        caminoPila.pop();
+    }
+
     cout << termcolor::green << "\t[RutaMasCorta/Exito]: " << termcolor::reset << endl;
     cout << "Para la secuencia " << descripcion_secuencia << ", la ruta más corta entre ";
     cout << "la base " << bases[nodoOrigen] << " en [" << i << "," << j << "] y ";
     cout << "la base " << bases[nodoDestino] << " en [" << x << "," << y << "] es:" << endl;
-    
-    cout << "\t";
-    while (!caminoPila.empty()) {
-        int nodo = caminoPila.top();
-        caminoPila.pop();
 
-        int r = nodo / ancho;
-        int c = nodo % ancho;
-        
-        cout << bases[nodo] << "[" << r << "," << c << "]";
-        
-        if (!caminoPila.empty()) {
-            cout << " -> ";
-        }
-    }
-    cout << endl;
+    // Llamada al renderer: ventana rectangular (pad=1), max_nodes=200, mostrar pesos y coords, 4 decimales, color
+    print_graph_stdout(grafo, res, path_nodes, bases, ancho, 1, 200, true, 4, true);
 
     // Mostrar costo total
-    cout << fixed << setprecision(4); //4 decimales (iomanip)
+    cout << fixed << setprecision(4);
     cout << "El costo total de la ruta es: " << res.distancias[nodoDestino] << endl;
 }
 
@@ -484,21 +481,18 @@ void Genoma::BaseRemota(const char *descripcion_secuencia, int i, int j) {
         curr = res.previos[curr];
     }
 
-    //Salida
+    //Salida (usar renderer)
     cout << termcolor::green << "\t[BaseRemota/Exito]: " << termcolor::reset << endl;
     cout << "Para la secuencia " << descripcion_secuencia << ", la base remota está ubicada en [" << remotoI << "," << remotoJ << "], ";
     cout << "y la ruta entre la base en [" << i << "," << j << "] y la base remota en [" << remotoI << "," << remotoJ << "] es:" << endl;
 
-    cout << "\t";
+    std::vector<int> path_nodes;
     while (!camino.empty()) {
-        int idx = camino.top();
+        path_nodes.push_back(camino.top());
         camino.pop();
-        int r = idx / ancho;
-        int c = idx % ancho;
-        cout << bases[idx] << "[" << r << "," << c << "]";
-        if (!camino.empty()) cout << " -> ";
     }
-    cout << endl;
+
+    print_graph_stdout(grafo, res, path_nodes, bases, ancho, 1, 200, true, 4, true);
 
     cout << fixed << setprecision(4);
     cout << "El costo total de la ruta es: " << res.distancias[nodoRemoto] << endl;
