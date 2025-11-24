@@ -6,3 +6,7 @@ src/main.exe
 *.exe
 
 .idea/
+
+build/
+
+-p/

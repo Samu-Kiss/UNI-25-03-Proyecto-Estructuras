@@ -484,10 +484,8 @@ void Genoma::RutaMasCorta(const char* descripcion_secuencia, int i, int j,
   cout << "la base " << bases[nodoDestino] << " en [" << x << "," << y
        << "] es:" << endl;
 
-  // Llamada al renderer: ventana rectangular (pad=1), max_nodes=200, mostrar
-  // pesos y coords, 4 decimales, color
-  print_graph_stdout(grafo, res, path_nodes, bases, ancho, 1, 200, true, 4,
-                     true);
+  // Llamada al renderer: mostrar ruta (4 decimales, color)
+  print_graph_stdout(grafo, path_nodes, bases, ancho, true, 4);
 
   // Mostrar costo total
   cout << fixed << setprecision(4);
@@ -592,8 +590,7 @@ void Genoma::BaseRemota(const char* descripcion_secuencia, int i, int j) {
     camino.pop();
   }
 
-  print_graph_stdout(grafo, res, path_nodes, bases, ancho, 1, 200, true, 4,
-                     true);
+  print_graph_stdout(grafo, path_nodes, bases, ancho, true, 4);
 
   cout << fixed << setprecision(4);
   cout << "El costo total de la ruta es: " << res.distancias[nodoRemoto]

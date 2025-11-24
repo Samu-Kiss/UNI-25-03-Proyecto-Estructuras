@@ -16,18 +16,9 @@
 
 using namespace std;
 
-static string pad_right(const string& s, size_t w) {
-  if (s.size() >= w) return s.substr(0, w);
-  string r = s;
-  r.append(w - s.size(), ' ');
-  return r;
-}
-
-void print_graph_stdout(const Grafo& g, const ResultadoDijkstra& res,
-                        const std::vector<int>& path_nodes,
-                        const std::vector<char>& bases, int ancho, int pad,
-                        int max_nodes, bool color, int decimals,
-                        bool color_edges) {
+void print_graph_stdout(const Grafo& g, const std::vector<int>& path_nodes,
+                        const std::vector<char>& bases, int ancho,
+                        bool color, int decimals) {
   int total_nodos = g.get_num_vertices();
   if (total_nodos <= 0) return;
 
@@ -53,9 +44,6 @@ void print_graph_stdout(const Grafo& g, const ResultadoDijkstra& res,
   int filas = (total_nodos + ancho - 1) / ancho;
   maxr = min(filas - 1, maxr);
   maxc = min(ancho - 1, maxc);
-  int window_rows = maxr - minr + 1;
-  int window_cols = maxc - minc + 1;
-  int window_nodes = window_rows * window_cols;
 
   // Set para identificar nodos del path rápidamente
   set<int> path_set(path_nodes.begin(), path_nodes.end());
