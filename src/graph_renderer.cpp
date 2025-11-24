@@ -10,6 +10,7 @@
 #include "log.hpp"
 #include <cmath>
 #include <climits>
+#include <algorithm>
 
 using namespace std;
 
