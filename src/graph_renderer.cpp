@@ -9,6 +9,7 @@
 #include <sstream>
 #include "log.hpp"
 #include <cmath>
+#include <climits>
 
 using namespace std;
 
