@@ -1,11 +1,11 @@
 #include "sistema.h"
 
 int main() {
-    //Crear instancia del sistema.
-    Sistema fasta;
+  // Crear instancia del sistema.
+  Sistema fasta;
 
-    // iniciar consola.
-    fasta.iniciarConsola();
+  // iniciar consola.
+  fasta.iniciarConsola();
 
-    return 0;
+  return 0;
 }
